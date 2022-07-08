@@ -29,7 +29,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
-    
   ],
   providers: [],
   bootstrap: [AppComponent]
