@@ -1,0 +1,60 @@
+.container-fluid {
+  position: relative;
+  display: block;
+  background-color: rgb(23, 159, 250);
+  height: 50px;
+}
+
+.container-fluid .toolbar {
+  padding-top: 15px;
+}
+
+.container-fluid span {
+  color: white;
+  background-color: none;
+  font-size: larger;
+  margin-left: 15px;
+}
+
+nav {
+  position: relative;
+  width: 200px;
+  height: 100%;
+  background-color: #0b2638;
+}
+
+mat-tree {
+  background-color: #0b2638;
+}
+
+nav mat-tree mat-tree-node div button :hover {
+  background-color: #0b2638;
+  color: #fff;
+}
+
+.mat-tree-node {
+  color: #fff;
+}
+
+.example-tree-invisible {
+  display: none;
+}
+
+.example-tree-invisible {
+  display: none;
+}
+
+.example-tree ul,
+.example-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+.example-tree .mat-nested-tree-node div[role=group] {
+  padding-left: 30px;
+}
+
+.example-tree div[role=group] > .mat-tree-node {
+  padding-left: 30px;
+}
