@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AssetComponent } from './components/asset/asset.component';
+import { AssetComponent } from './components/test/asset.component';
 import { AssetChartDataComponent } from './components/asset-chart-data/asset-chart-data.component';
 
 const routes: Routes = [

@@ -12,7 +12,7 @@ import {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { AssetComponent } from './components/asset/asset.component';
+import { AssetComponent } from './components/test/asset.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AssetDataService } from './services/asset-data.service';
 import { AssetChartDataComponent } from './components/asset-chart-data/asset-chart-data.component';
