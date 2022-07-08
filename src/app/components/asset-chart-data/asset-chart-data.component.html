@@ -7,13 +7,14 @@
   </div>
   <nav class='animated bounceInDown ' *ngIf="collapse">
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
-      <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+      <mat-tree-node (click)="selectAsset(node.id)" *matTreeNodeDef="let node" matTreeNodeToggle>
         {{node.name}}
       </mat-tree-node>
       <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
         <div class="mat-tree-node">
-          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
-            <mat-icon class="mat-icon-rtl-mirror">
+          <button (click)="selectAsset(node.id)" mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name" >
+            
+            <mat-icon  class="mat-icon-rtl-mirror">
               {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
             </mat-icon>
           </button>
@@ -25,4 +26,11 @@
       </mat-nested-tree-node>
     </mat-tree>
   </nav>
+  <div class="asset">
+ <router-outlet></router-outlet>
+  </div>
+ 
+
+
+  
   

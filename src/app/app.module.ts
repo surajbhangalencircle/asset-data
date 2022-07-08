@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { DatePipe } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AssetChartDataComponent } from './components/assetchartdata/asset-chart-data/asset-chart-data.component'
 
 
 // Angular Modules
@@ -12,25 +12,30 @@ import {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatToolbarModule } from '@angular/material/toolbar';
-
+import { AssetComponent } from './components/asset/asset.component';
+import { HttpClientModule } from '@angular/common/http';
+import { AssetDataService } from './services/asset-data.service';
+import { AssetChartDataComponent } from './components/asset-chart-data/asset-chart-data.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    AssetChartDataComponent
+    AssetChartDataComponent,
+    AssetComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     MatTreeModule,
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
   ],
-  providers: [],
+  providers: [AssetDataService,DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
