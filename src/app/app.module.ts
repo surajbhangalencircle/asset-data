@@ -16,6 +16,8 @@ import { AssetComponent } from './components/test/asset.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AssetDataService } from './services/asset-data.service';
 import { AssetChartDataComponent } from './components/asset-chart-data/asset-chart-data.component';
+import { NgChartsModule } from 'ng2-charts';
+
 
 
 
@@ -34,6 +36,7 @@ import { AssetChartDataComponent } from './components/asset-chart-data/asset-cha
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
+    NgChartsModule
   ],
   providers: [AssetDataService,DatePipe],
   bootstrap: [AppComponent]
