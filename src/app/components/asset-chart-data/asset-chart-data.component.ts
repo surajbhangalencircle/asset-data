@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { Route, Router } from '@angular/router';
+import { fromEventPattern } from 'rxjs';
 import { AssetDataService } from 'src/app/services/asset-data.service';
 import { Response } from './response';
 
@@ -44,26 +45,18 @@ export class AssetChartDataComponent implements OnInit {
 
   collapse: boolean = true;
   responseData: Response[] = [];
-  dataSet: any;
-  dates: any[] = [];
-  val: number[] = [];
-  temp: Array<any> = [];
+  values: number[] = [];
+  dates: Array<any> = [];
   response: Response = new Response;
+  temp1: Array<any> = [];
+  val1: number[] = [];
+  nodeId: number = 5;
 
-
-  nodeId: number = 0;
-  // chartData: any;
-  // chartLabels : any;
-  // chartOptions : any;
-
-
-  barChartOptions: any;
-  barChartLabels: any;
-  barChartType: any;
-  barChartLegend: any;
-  barChartData: any;
-
-
+  lineChartOptions: any;
+  lineChartLabels: any;
+  lineChartType: any;
+  lineChartLegend: any;
+  lineChartData: any;
 
   data: any;
   treeControl = new NestedTreeControl<treeNode>((node) => node.children);
@@ -78,15 +71,9 @@ export class AssetChartDataComponent implements OnInit {
     return !!node.children && node.children.length > 0;
   };
 
-
-
   ngOnInit(): void {
     this.assetData.getData().subscribe(res => {
       this.responseData = res;
-      // console.log(this.responseData[this.nodeId]);
-      //  this.dataSet = (this.responseData).map((val:any)=> {return val[this.nodeId]})
-      // console.log(this.dataSet);
-
     })
   }
 
@@ -96,38 +83,63 @@ export class AssetChartDataComponent implements OnInit {
 
   selectAsset(id: number, name: string) {
     this.nodeId = id;
-
     // console.log(this.nodeId);
-    // console.log(this.responseData)
 
     this.responseData.forEach(element => {
       if (element.assetId == this.nodeId) {
-
-        this.temp = new Array();
-        this.val = [];
+        this.dates = new Array();
+        this.values = [];
         for (const [key, value] of Object.entries(element.measurements)) {
-
           const e = this.datePipe.transform(key, 'LLL-yy');
-          // console.log(e);
-
-          this.temp.push(e);
-          this.val.push(value);
+          this.dates.push(e);
+          this.values.push(value);
         }
-      } 
+      } else if (1 == this.nodeId) {
+        //this.val1=new Array();
+        // this.temp = new Array();
+        if (element.assetId == 2) {
+
+          this.dates = new Array();
+          console.log('Test=>2');
+          for (const [key, value] of Object.entries(element.measurements)) {
+            const e = this.datePipe.transform(key, 'LLL-yy');
+            this.dates.push(e);
+            this.val1.push(value);
+          }
 
 
+        }
+        else if (element.assetId == 4) {
+          // this.temp = new Array();
+          // this.val = [];
+          for (const [key, value] of Object.entries(element.measurements)) {
 
+            const e = this.datePipe.transform(key, 'LLL-yy');
+            for (var i = 0; i < this.val1.length - 1; i++) {
+              
+              this.values.push(this.val1[i] + value);
+              // console.log(this.values);
+            
+            }
+            //this.val.push(value);
+          }
 
-      this.barChartOptions = {
+        }
+       
+
+      }
+
+      this.lineChartOptions = {
         scaleShowVerticalLines: true,
         responsive: true
       };
-      this.barChartLabels = this.temp;
-      this.barChartType = 'line';
-      this.barChartLegend = false;
-      this.barChartData = [
-        { data: this.val, label: name, borderColor: '#87CEEB', pointRadius: 0 }
+      this.lineChartLabels = this.dates;
+      this.lineChartType = 'line';
+      this.lineChartLegend = true;
+      this.lineChartData = [
+        { data: this.values, label: name, borderColor: '#87CEEB', pointRadius: 0 },
       ];
+
 
     });
 
