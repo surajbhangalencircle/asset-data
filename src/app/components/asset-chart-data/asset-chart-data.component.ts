@@ -2,8 +2,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { Route, Router } from '@angular/router';
-import { fromEventPattern } from 'rxjs';
+import { elementAt } from 'rxjs';
 import { AssetDataService } from 'src/app/services/asset-data.service';
 import { Response } from './response';
 
@@ -11,6 +10,7 @@ import { Response } from './response';
 interface treeNode {
   name: string;
   id: string;
+  parentId: string;
   children?: treeNode[];
 }
 
@@ -18,19 +18,23 @@ interface treeNode {
 const TREE_DATA: treeNode[] = [
   {
     name: 'Asset 0',
-    id: '0'
+    id: '0',
+    parentId: 'null',
   },
   {
-    name: 'Asset 01',
+    name: 'Asset 1',
     id: '1',
-    children: [{ name: 'Asset 02', id: '2' },
+    parentId: 'null', 
+    children: [{ name: 'Asset 2', id: '2', parentId: '1' },
     {
-      name: 'Asset 03',
+      name: 'Asset 3',
       id: '3',
+      parentId: '1',
       children: [
         {
-          name: 'Asset 04',
-          id: '4'
+          name: 'Asset 4',
+          id: '4',
+          parentId: '3'
         },
       ],
     },],
@@ -53,6 +57,7 @@ export class AssetChartDataComponent implements OnInit {
   val1: number[] = [];
   nodeId: number = 5;
   nodeName:string='';
+  treeNodeData:any=[];
 
   lineChartOptions: any;
   lineChartLabels: any;
@@ -76,19 +81,25 @@ export class AssetChartDataComponent implements OnInit {
   ngOnInit(): void {
     this.assetData.getData().subscribe(res => {
       this.responseData = res;
-    })
+    });
+    this.assetData.getTreeNode().subscribe(res=> this.treeNodeData = res);
   }
 
   toggle() {
     this.collapse = !this.collapse
   }
 
-  selectAsset(id: number, name: string) {
+  selectAsset(id: number, name: string,parentId: string) {
     this.nodeId = id;
     this.nodeName=name;
     // console.log(this.nodeId);
+    console.log(parentId);
+
+    
 
     this.responseData.forEach(element => {
+      this.treeNodeData.map((nodeData:any)=>{nodeData.id == this.nodeId
+
       if (element.assetId == this.nodeId) {
         this.dates = new Array();
         this.values = [];
@@ -97,8 +108,8 @@ export class AssetChartDataComponent implements OnInit {
           this.dates.push(e);
           this.values.push(value);
         }
-      } else if (1 == this.nodeId) {
-        if (element.assetId == 2) {
+      } else if (nodeData.parentId == this.nodeId) {
+        if (element.assetId == nodeData.id) {
           this.dates = new Array();
           // console.log('Test=>2');
           for (const [key, value] of Object.entries(element.measurements)) {
@@ -107,32 +118,39 @@ export class AssetChartDataComponent implements OnInit {
             this.val1.push(value);
           }
         }
-        else if (element.assetId == 4) {
-          this.values = [];
-          // console.log('Test=>4');
-          for (const [key, value] of Object.entries(element.measurements)) {
-
-            const e = this.datePipe.transform(key, 'LLL-yy');
-            for (var i = 0; i < this.val1.length - 1; i++) {
-              this.values.push(this.val1[i] + value);
-              // console.log(this.values);        
-            }
-          }
-        }
-      } else if (3 == this.nodeId) {
-        if (element.assetId == 4) {
-          this.dates = new Array();
-          this.values = [];
-          for (const [key, value] of Object.entries(element.measurements)) {
-            const e = this.datePipe.transform(key, 'LLL-yy');
-            this.dates.push(e);
-            this.values.push(value);
-          }
-        }
-      }
+      //   else if (element.assetId == 4) {
+      //     this.values = [];
+      //     // console.log('Test=>4');
+      //     for (const [key, value] of Object.entries(element.measurements)) {
+      //       const e = this.datePipe.transform(key, 'LLL-yy');
+      //       for (var i = 0; i < this.val1.length - 1; i++) {
+      //         this.values.push(this.val1[i] + value);
+      //         // console.log(this.values);        
+      //       }
+      //     }
+      //   }
+      // } else if (3 == this.nodeId) {
+      //   if (element.assetId == 4) {
+      //     this.dates = new Array();
+      //     this.values = [];
+      //     for (const [key, value] of Object.entries(element.measurements)) {
+      //       const e = this.datePipe.transform(key, 'LLL-yy');
+      //       this.dates.push(e);
+      //       this.values.push(value);
+      //     }
+      //   }
+      
+       }
 
       this.lineChartOptions = {
-        scaleShowVerticalLines: true,
+        scales: {
+          x: {
+            grid: {
+              display: true
+            }
+          },
+        },        
+        // scaleShowVerticalLines: false,
         responsive: true,
       };
       this.lineChartLabels = this.dates;
@@ -141,7 +159,10 @@ export class AssetChartDataComponent implements OnInit {
       this.lineChartData = [
         { data: this.values, label: name, borderColor: '#87CEEB', pointRadius: 0 },
       ];
+    })
     });
+    // console.log(this.treeNodeData);
   }
+  
 
 }

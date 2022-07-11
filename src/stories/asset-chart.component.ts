@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'storybook-asset-chart',
+  selector: 'storybook-asset-',
   template: ` <button
     type="button"
     (click)="onClick.emit($event)"

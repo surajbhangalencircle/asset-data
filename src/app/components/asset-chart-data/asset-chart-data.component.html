@@ -6,12 +6,12 @@
 </div>
 <nav class='animated bounceInDown ' *ngIf="collapse">
   <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
-    <mat-tree-node (click)="selectAsset(node.id,node.name)" (click)="activeNode = node" [ngClass]="{ 'background-highlight': activeNode === node }" *matTreeNodeDef="let node" matTreeNodeToggle>
+    <mat-tree-node (click)="selectAsset(node.id,node.name,node.parentId)" (click)="activeNode = node" [ngClass]="{ 'background-highlight': activeNode === node }" *matTreeNodeDef="let node" matTreeNodeToggle>
       {{node.name}}
     </mat-tree-node>
     <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
       <div class="mat-tree-node">
-        <button (click)="selectAsset(node.id,node.name)" (click)="activeNode = node" [ngClass]="{ 'background-highlight': activeNode === node }" mat-icon-button matTreeNodeToggle
+        <button (click)="selectAsset(node.id,node.name,node.parentId)" (click)="activeNode = node" [ngClass]="{ 'background-highlight': activeNode === node }" mat-icon-button matTreeNodeToggle
           [attr.aria-label]="'Toggle ' + node.name">
           <mat-icon class="mat-icon-rtl-mirror">
             {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
@@ -29,7 +29,7 @@
 <div class="asset">
   <div *ngIf="nodeId==5" class="noAsset">
     <h2>No Asset Selected</h2>
-    <span>You can select an asset from menu on the left</span>
+    <span>You can select an asset from menu on the left.</span>
   </div>
   <div *ngIf="nodeId">
     <h2 *ngIf="nodeId <5">{{nodeName}}</h2>
