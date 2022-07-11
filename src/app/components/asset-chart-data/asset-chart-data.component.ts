@@ -95,43 +95,42 @@ export class AssetChartDataComponent implements OnInit {
           this.values.push(value);
         }
       } else if (1 == this.nodeId) {
-        //this.val1=new Array();
-        // this.temp = new Array();
         if (element.assetId == 2) {
-
           this.dates = new Array();
-          console.log('Test=>2');
+          // console.log('Test=>2');
           for (const [key, value] of Object.entries(element.measurements)) {
             const e = this.datePipe.transform(key, 'LLL-yy');
             this.dates.push(e);
             this.val1.push(value);
           }
-
-
         }
         else if (element.assetId == 4) {
-          // this.temp = new Array();
-          // this.val = [];
+          this.values = [];
+          // console.log('Test=>4');
           for (const [key, value] of Object.entries(element.measurements)) {
 
             const e = this.datePipe.transform(key, 'LLL-yy');
             for (var i = 0; i < this.val1.length - 1; i++) {
-              
               this.values.push(this.val1[i] + value);
-              // console.log(this.values);
-            
+              // console.log(this.values);        
             }
-            //this.val.push(value);
           }
-
         }
-       
-
+      } else if (3 == this.nodeId) {
+        if (element.assetId == 4) {
+          this.dates = new Array();
+          this.values = [];
+          for (const [key, value] of Object.entries(element.measurements)) {
+            const e = this.datePipe.transform(key, 'LLL-yy');
+            this.dates.push(e);
+            this.values.push(value);
+          }
+        }
       }
 
       this.lineChartOptions = {
         scaleShowVerticalLines: true,
-        responsive: true
+        responsive: true,
       };
       this.lineChartLabels = this.dates;
       this.lineChartType = 'line';
@@ -139,10 +138,7 @@ export class AssetChartDataComponent implements OnInit {
       this.lineChartData = [
         { data: this.values, label: name, borderColor: '#87CEEB', pointRadius: 0 },
       ];
-
-
     });
-
   }
 
 }

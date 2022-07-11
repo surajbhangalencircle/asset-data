@@ -25,6 +25,7 @@ nav {
 
 mat-tree {
   background-color: #0b2638;
+  padding-left:10%;
 }
 
 nav mat-tree mat-tree-node div button :hover {

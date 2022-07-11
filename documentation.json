@@ -3,12 +3,12 @@
     "interfaces": [
         {
             "name": "treeNode",
-            "id": "interface-treeNode-971c9116eab78b374cf87e18b246a83b71e6139cb2e3d4d757ca8254b309a4054e97d022efdf7363c02b7a1532b994e5acc07dc38e82d31eb210d43e0a59805e",
+            "id": "interface-treeNode-c5d21eef2f3c44683880f216cecf12137593fe3d9dec114895c932660e2ece253ff13f21d125933d1d80e95a0e49e9923f75f3464253f520e4266d6478e54b75",
             "file": "src/app/components/asset-chart-data/asset-chart-data.component.ts",
             "deprecated": false,
             "deprecationMessage": "",
             "type": "interface",
-            "sourceCode": "import { NestedTreeControl } from '@angular/cdk/tree';\nimport { DatePipe } from '@angular/common';\nimport { Component, OnInit } from '@angular/core';\nimport { MatTreeNestedDataSource } from '@angular/material/tree';\nimport { Route, Router } from '@angular/router';\nimport { AssetDataService } from 'src/app/services/asset-data.service';\nimport { Response } from './response';\n\n\ninterface treeNode {\n  name: string;\n  id: string;\n  children?: treeNode[];\n}\n\n\nconst TREE_DATA: treeNode[] = [\n  {\n    name: 'Asset 0',\n    id: '0'\n  },\n  {\n    name: 'Asset 01',\n    id: '1',\n    children: [{ name: 'Asset 02', id: '2' },\n    {\n      name: 'Asset 03',\n      id: '3',\n      children: [\n        {\n          name: 'Asset 04',\n          id: '4'\n        },\n      ],\n    },],\n  },\n]\n@Component({\n  selector: 'app-asset-chart-data',\n  templateUrl: './asset-chart-data.component.html',\n  styleUrls: ['./asset-chart-data.component.css']\n})\nexport class AssetChartDataComponent implements OnInit {\n\n  collapse: boolean = true;\n  responseData: Response[] = [];\n  dataSet: any;\n  dates: any[] = [];\n  val: number[] = [];\n  temp: Array<any> = [];\n  response: Response = new Response;\n\n\n  nodeId: number = 0;\n  // chartData: any;\n  // chartLabels : any;\n  // chartOptions : any;\n\n\n  barChartOptions: any;\n  barChartLabels: any;\n  barChartType: any;\n  barChartLegend: any;\n  barChartData: any;\n\n\n\n  data: any;\n  treeControl = new NestedTreeControl<treeNode>((node) => node.children);\n  dataSource = new MatTreeNestedDataSource<treeNode>();\n\n  constructor(private assetData: AssetDataService, private datePipe: DatePipe) {\n    this.dataSource.data = TREE_DATA;\n    console.log(this.dataSource);\n  }\n\n  hasChild = (a: number, node: treeNode) => {\n    return !!node.children && node.children.length > 0;\n  };\n\n\n\n  ngOnInit(): void {\n    this.assetData.getData().subscribe(res => {\n      this.responseData = res;\n      // console.log(this.responseData[this.nodeId]);\n      //  this.dataSet = (this.responseData).map((val:any)=> {return val[this.nodeId]})\n      // console.log(this.dataSet);\n\n    })\n  }\n\n  toggle() {\n    this.collapse = !this.collapse\n  }\n\n  selectAsset(id: number, name: string) {\n    this.nodeId = id;\n\n    // console.log(this.nodeId);\n    // console.log(this.responseData)\n\n    this.responseData.forEach(element => {\n      if (element.assetId == this.nodeId) {\n\n        this.temp = new Array();\n        this.val = [];\n        for (const [key, value] of Object.entries(element.measurements)) {\n\n          const e = this.datePipe.transform(key, 'LLL-yy');\n          // console.log(e);\n\n          this.temp.push(e);\n          this.val.push(value);\n        }\n      } \n\n\n\n\n      this.barChartOptions = {\n        scaleShowVerticalLines: true,\n        responsive: true\n      };\n      this.barChartLabels = this.temp;\n      this.barChartType = 'line';\n      this.barChartLegend = false;\n      this.barChartData = [\n        { data: this.val, label: name, borderColor: '#87CEEB', pointRadius: 0 }\n      ];\n\n    });\n\n  }\n\n}\n",
+            "sourceCode": "import { NestedTreeControl } from '@angular/cdk/tree';\nimport { DatePipe } from '@angular/common';\nimport { Component, OnInit } from '@angular/core';\nimport { MatTreeNestedDataSource } from '@angular/material/tree';\nimport { Route, Router } from '@angular/router';\nimport { fromEventPattern } from 'rxjs';\nimport { AssetDataService } from 'src/app/services/asset-data.service';\nimport { Response } from './response';\n\n\ninterface treeNode {\n  name: string;\n  id: string;\n  children?: treeNode[];\n}\n\n\nconst TREE_DATA: treeNode[] = [\n  {\n    name: 'Asset 0',\n    id: '0'\n  },\n  {\n    name: 'Asset 01',\n    id: '1',\n    children: [{ name: 'Asset 02', id: '2' },\n    {\n      name: 'Asset 03',\n      id: '3',\n      children: [\n        {\n          name: 'Asset 04',\n          id: '4'\n        },\n      ],\n    },],\n  },\n]\n@Component({\n  selector: 'app-asset-chart-data',\n  templateUrl: './asset-chart-data.component.html',\n  styleUrls: ['./asset-chart-data.component.css']\n})\nexport class AssetChartDataComponent implements OnInit {\n\n  collapse: boolean = true;\n  responseData: Response[] = [];\n  values: number[] = [];\n  dates: Array<any> = [];\n  response: Response = new Response;\n  temp1: Array<any> = [];\n  val1: number[] = [];\n  nodeId: number = 5;\n\n  lineChartOptions: any;\n  lineChartLabels: any;\n  lineChartType: any;\n  lineChartLegend: any;\n  lineChartData: any;\n\n  data: any;\n  treeControl = new NestedTreeControl<treeNode>((node) => node.children);\n  dataSource = new MatTreeNestedDataSource<treeNode>();\n\n  constructor(private assetData: AssetDataService, private datePipe: DatePipe) {\n    this.dataSource.data = TREE_DATA;\n    console.log(this.dataSource);\n  }\n\n  hasChild = (a: number, node: treeNode) => {\n    return !!node.children && node.children.length > 0;\n  };\n\n  ngOnInit(): void {\n    this.assetData.getData().subscribe(res => {\n      this.responseData = res;\n    })\n  }\n\n  toggle() {\n    this.collapse = !this.collapse\n  }\n\n  selectAsset(id: number, name: string) {\n    this.nodeId = id;\n    // console.log(this.nodeId);\n\n    this.responseData.forEach(element => {\n      if (element.assetId == this.nodeId) {\n        this.dates = new Array();\n        this.values = [];\n        for (const [key, value] of Object.entries(element.measurements)) {\n          const e = this.datePipe.transform(key, 'LLL-yy');\n          this.dates.push(e);\n          this.values.push(value);\n        }\n      } else if (1 == this.nodeId) {\n        //this.val1=new Array();\n        \n        if (element.assetId == 2) {\n\n          this.dates = new Array();\n          // console.log('Test=>2');\n          for (const [key, value] of Object.entries(element.measurements)) {\n            const e = this.datePipe.transform(key, 'LLL-yy');\n            this.dates.push(e);\n            this.val1.push(value);\n          }\n        }\n        else if (element.assetId == 4) {\n          this.values = [];\n          // console.log('Test=>4');\n          for (const [key, value] of Object.entries(element.measurements)) {\n\n            const e = this.datePipe.transform(key, 'LLL-yy');\n            for (var i = 0; i < this.val1.length - 1; i++) {\n              this.values.push(this.val1[i] + value);\n              // console.log(this.values);        \n            }\n          }\n        }       \n      }else if (3 == this.nodeId) {\n        \n        if (element.assetId == 4) {\n          this.dates = new Array();\n          this.values = [];\n          for (const [key, value] of Object.entries(element.measurements)) {\n            const e = this.datePipe.transform(key, 'LLL-yy');\n            this.dates.push(e);\n            this.values.push(value);\n          }\n        }\n      }\n\n      this.lineChartOptions = {\n        scaleShowVerticalLines: true,\n        responsive: true,\n      };\n      this.lineChartLabels = this.dates;\n      this.lineChartType = 'line';\n      this.lineChartLegend = true;\n      this.lineChartData = [\n        { data: this.values, label: name, borderColor: '#87CEEB', pointRadius: 0},\n      ];\n\n\n    });\n\n  }\n\n}\n",
             "properties": [
                 {
                     "name": "children",
@@ -17,7 +17,7 @@
                     "type": "treeNode[]",
                     "optional": true,
                     "description": "",
-                    "line": 13
+                    "line": 14
                 },
                 {
                     "name": "id",
@@ -26,7 +26,7 @@
                     "type": "string",
                     "optional": false,
                     "description": "",
-                    "line": 12
+                    "line": 13
                 },
                 {
                     "name": "name",
@@ -35,7 +35,7 @@
                     "type": "string",
                     "optional": false,
                     "description": "",
-                    "line": 11
+                    "line": 12
                 }
             ],
             "indexSignatures": [],
@@ -199,11 +199,11 @@
                 }
             ],
             "stylesData": "",
-            "templateData": "<div class=\"header\">\n    <app-asset-chart-data></app-asset-chart-data>\n</div>\n\n\n\n    <!-- <app-asset></app-asset> -->\n\n\n"
+            "templateData": "<header>\n    <app-asset-chart-data></app-asset-chart-data>\n</header>\n   \n\n\n\n\n    <!-- <app-asset></app-asset> -->\n\n\n"
         },
         {
             "name": "AssetChartDataComponent",
-            "id": "component-AssetChartDataComponent-971c9116eab78b374cf87e18b246a83b71e6139cb2e3d4d757ca8254b309a4054e97d022efdf7363c02b7a1532b994e5acc07dc38e82d31eb210d43e0a59805e",
+            "id": "component-AssetChartDataComponent-c5d21eef2f3c44683880f216cecf12137593fe3d9dec114895c932660e2ece253ff13f21d125933d1d80e95a0e49e9923f75f3464253f520e4266d6478e54b75",
             "file": "src/app/components/asset-chart-data/asset-chart-data.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -223,51 +223,6 @@
             "outputsClass": [],
             "propertiesClass": [
                 {
-                    "name": "barChartData",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "any",
-                    "optional": false,
-                    "description": "",
-                    "line": 64
-                },
-                {
-                    "name": "barChartLabels",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "any",
-                    "optional": false,
-                    "description": "",
-                    "line": 61
-                },
-                {
-                    "name": "barChartLegend",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "any",
-                    "optional": false,
-                    "description": "",
-                    "line": 63
-                },
-                {
-                    "name": "barChartOptions",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "any",
-                    "optional": false,
-                    "description": "",
-                    "line": 60
-                },
-                {
-                    "name": "barChartType",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "any",
-                    "optional": false,
-                    "description": "",
-                    "line": 62
-                },
-                {
                     "name": "collapse",
                     "defaultValue": "true",
                     "deprecated": false,
@@ -275,7 +230,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 45
+                    "line": 46
                 },
                 {
                     "name": "data",
@@ -284,16 +239,7 @@
                     "type": "any",
                     "optional": false,
                     "description": "",
-                    "line": 68
-                },
-                {
-                    "name": "dataSet",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "any",
-                    "optional": false,
-                    "description": "",
-                    "line": 47
+                    "line": 61
                 },
                 {
                     "name": "dataSource",
@@ -303,17 +249,17 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 70
+                    "line": 63
                 },
                 {
                     "name": "dates",
                     "defaultValue": "[]",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "type": "any[]",
+                    "type": "Array<any>",
                     "optional": false,
                     "description": "",
-                    "line": 48
+                    "line": 49
                 },
                 {
                     "name": "hasChild",
@@ -323,17 +269,62 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 77
+                    "line": 70
+                },
+                {
+                    "name": "lineChartData",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any",
+                    "optional": false,
+                    "description": "",
+                    "line": 59
+                },
+                {
+                    "name": "lineChartLabels",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any",
+                    "optional": false,
+                    "description": "",
+                    "line": 56
+                },
+                {
+                    "name": "lineChartLegend",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any",
+                    "optional": false,
+                    "description": "",
+                    "line": 58
+                },
+                {
+                    "name": "lineChartOptions",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any",
+                    "optional": false,
+                    "description": "",
+                    "line": 55
+                },
+                {
+                    "name": "lineChartType",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any",
+                    "optional": false,
+                    "description": "",
+                    "line": 57
                 },
                 {
                     "name": "nodeId",
-                    "defaultValue": "0",
+                    "defaultValue": "5",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "number",
                     "optional": false,
                     "description": "",
-                    "line": 54
+                    "line": 53
                 },
                 {
                     "name": "response",
@@ -343,7 +334,7 @@
                     "type": "Response",
                     "optional": false,
                     "description": "",
-                    "line": 51
+                    "line": 50
                 },
                 {
                     "name": "responseData",
@@ -353,17 +344,17 @@
                     "type": "Response[]",
                     "optional": false,
                     "description": "",
-                    "line": 46
+                    "line": 47
                 },
                 {
-                    "name": "temp",
+                    "name": "temp1",
                     "defaultValue": "[]",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Array<any>",
                     "optional": false,
                     "description": "",
-                    "line": 50
+                    "line": 51
                 },
                 {
                     "name": "treeControl",
@@ -373,17 +364,27 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 69
+                    "line": 62
                 },
                 {
-                    "name": "val",
+                    "name": "val1",
                     "defaultValue": "[]",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "number[]",
                     "optional": false,
                     "description": "",
-                    "line": 49
+                    "line": 52
+                },
+                {
+                    "name": "values",
+                    "defaultValue": "[]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "number[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 48
                 }
             ],
             "methodsClass": [
@@ -393,7 +394,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 83,
+                    "line": 74,
                     "deprecated": false,
                     "deprecationMessage": ""
                 },
@@ -416,7 +417,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 97,
+                    "line": 84,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -446,7 +447,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 93,
+                    "line": 80,
                     "deprecated": false,
                     "deprecationMessage": ""
                 }
@@ -458,11 +459,11 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { NestedTreeControl } from '@angular/cdk/tree';\nimport { DatePipe } from '@angular/common';\nimport { Component, OnInit } from '@angular/core';\nimport { MatTreeNestedDataSource } from '@angular/material/tree';\nimport { Route, Router } from '@angular/router';\nimport { AssetDataService } from 'src/app/services/asset-data.service';\nimport { Response } from './response';\n\n\ninterface treeNode {\n  name: string;\n  id: string;\n  children?: treeNode[];\n}\n\n\nconst TREE_DATA: treeNode[] = [\n  {\n    name: 'Asset 0',\n    id: '0'\n  },\n  {\n    name: 'Asset 01',\n    id: '1',\n    children: [{ name: 'Asset 02', id: '2' },\n    {\n      name: 'Asset 03',\n      id: '3',\n      children: [\n        {\n          name: 'Asset 04',\n          id: '4'\n        },\n      ],\n    },],\n  },\n]\n@Component({\n  selector: 'app-asset-chart-data',\n  templateUrl: './asset-chart-data.component.html',\n  styleUrls: ['./asset-chart-data.component.css']\n})\nexport class AssetChartDataComponent implements OnInit {\n\n  collapse: boolean = true;\n  responseData: Response[] = [];\n  dataSet: any;\n  dates: any[] = [];\n  val: number[] = [];\n  temp: Array<any> = [];\n  response: Response = new Response;\n\n\n  nodeId: number = 0;\n  // chartData: any;\n  // chartLabels : any;\n  // chartOptions : any;\n\n\n  barChartOptions: any;\n  barChartLabels: any;\n  barChartType: any;\n  barChartLegend: any;\n  barChartData: any;\n\n\n\n  data: any;\n  treeControl = new NestedTreeControl<treeNode>((node) => node.children);\n  dataSource = new MatTreeNestedDataSource<treeNode>();\n\n  constructor(private assetData: AssetDataService, private datePipe: DatePipe) {\n    this.dataSource.data = TREE_DATA;\n    console.log(this.dataSource);\n  }\n\n  hasChild = (a: number, node: treeNode) => {\n    return !!node.children && node.children.length > 0;\n  };\n\n\n\n  ngOnInit(): void {\n    this.assetData.getData().subscribe(res => {\n      this.responseData = res;\n      // console.log(this.responseData[this.nodeId]);\n      //  this.dataSet = (this.responseData).map((val:any)=> {return val[this.nodeId]})\n      // console.log(this.dataSet);\n\n    })\n  }\n\n  toggle() {\n    this.collapse = !this.collapse\n  }\n\n  selectAsset(id: number, name: string) {\n    this.nodeId = id;\n\n    // console.log(this.nodeId);\n    // console.log(this.responseData)\n\n    this.responseData.forEach(element => {\n      if (element.assetId == this.nodeId) {\n\n        this.temp = new Array();\n        this.val = [];\n        for (const [key, value] of Object.entries(element.measurements)) {\n\n          const e = this.datePipe.transform(key, 'LLL-yy');\n          // console.log(e);\n\n          this.temp.push(e);\n          this.val.push(value);\n        }\n      } \n\n\n\n\n      this.barChartOptions = {\n        scaleShowVerticalLines: true,\n        responsive: true\n      };\n      this.barChartLabels = this.temp;\n      this.barChartType = 'line';\n      this.barChartLegend = false;\n      this.barChartData = [\n        { data: this.val, label: name, borderColor: '#87CEEB', pointRadius: 0 }\n      ];\n\n    });\n\n  }\n\n}\n",
+            "sourceCode": "import { NestedTreeControl } from '@angular/cdk/tree';\nimport { DatePipe } from '@angular/common';\nimport { Component, OnInit } from '@angular/core';\nimport { MatTreeNestedDataSource } from '@angular/material/tree';\nimport { Route, Router } from '@angular/router';\nimport { fromEventPattern } from 'rxjs';\nimport { AssetDataService } from 'src/app/services/asset-data.service';\nimport { Response } from './response';\n\n\ninterface treeNode {\n  name: string;\n  id: string;\n  children?: treeNode[];\n}\n\n\nconst TREE_DATA: treeNode[] = [\n  {\n    name: 'Asset 0',\n    id: '0'\n  },\n  {\n    name: 'Asset 01',\n    id: '1',\n    children: [{ name: 'Asset 02', id: '2' },\n    {\n      name: 'Asset 03',\n      id: '3',\n      children: [\n        {\n          name: 'Asset 04',\n          id: '4'\n        },\n      ],\n    },],\n  },\n]\n@Component({\n  selector: 'app-asset-chart-data',\n  templateUrl: './asset-chart-data.component.html',\n  styleUrls: ['./asset-chart-data.component.css']\n})\nexport class AssetChartDataComponent implements OnInit {\n\n  collapse: boolean = true;\n  responseData: Response[] = [];\n  values: number[] = [];\n  dates: Array<any> = [];\n  response: Response = new Response;\n  temp1: Array<any> = [];\n  val1: number[] = [];\n  nodeId: number = 5;\n\n  lineChartOptions: any;\n  lineChartLabels: any;\n  lineChartType: any;\n  lineChartLegend: any;\n  lineChartData: any;\n\n  data: any;\n  treeControl = new NestedTreeControl<treeNode>((node) => node.children);\n  dataSource = new MatTreeNestedDataSource<treeNode>();\n\n  constructor(private assetData: AssetDataService, private datePipe: DatePipe) {\n    this.dataSource.data = TREE_DATA;\n    console.log(this.dataSource);\n  }\n\n  hasChild = (a: number, node: treeNode) => {\n    return !!node.children && node.children.length > 0;\n  };\n\n  ngOnInit(): void {\n    this.assetData.getData().subscribe(res => {\n      this.responseData = res;\n    })\n  }\n\n  toggle() {\n    this.collapse = !this.collapse\n  }\n\n  selectAsset(id: number, name: string) {\n    this.nodeId = id;\n    // console.log(this.nodeId);\n\n    this.responseData.forEach(element => {\n      if (element.assetId == this.nodeId) {\n        this.dates = new Array();\n        this.values = [];\n        for (const [key, value] of Object.entries(element.measurements)) {\n          const e = this.datePipe.transform(key, 'LLL-yy');\n          this.dates.push(e);\n          this.values.push(value);\n        }\n      } else if (1 == this.nodeId) {\n        //this.val1=new Array();\n        \n        if (element.assetId == 2) {\n\n          this.dates = new Array();\n          // console.log('Test=>2');\n          for (const [key, value] of Object.entries(element.measurements)) {\n            const e = this.datePipe.transform(key, 'LLL-yy');\n            this.dates.push(e);\n            this.val1.push(value);\n          }\n        }\n        else if (element.assetId == 4) {\n          this.values = [];\n          // console.log('Test=>4');\n          for (const [key, value] of Object.entries(element.measurements)) {\n\n            const e = this.datePipe.transform(key, 'LLL-yy');\n            for (var i = 0; i < this.val1.length - 1; i++) {\n              this.values.push(this.val1[i] + value);\n              // console.log(this.values);        \n            }\n          }\n        }       \n      }else if (3 == this.nodeId) {\n        \n        if (element.assetId == 4) {\n          this.dates = new Array();\n          this.values = [];\n          for (const [key, value] of Object.entries(element.measurements)) {\n            const e = this.datePipe.transform(key, 'LLL-yy');\n            this.dates.push(e);\n            this.values.push(value);\n          }\n        }\n      }\n\n      this.lineChartOptions = {\n        scaleShowVerticalLines: true,\n        responsive: true,\n      };\n      this.lineChartLabels = this.dates;\n      this.lineChartType = 'line';\n      this.lineChartLegend = true;\n      this.lineChartData = [\n        { data: this.values, label: name, borderColor: '#87CEEB', pointRadius: 0},\n      ];\n\n\n    });\n\n  }\n\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ".container-fluid {\r\n  position: relative;\r\n  display: block;\r\n  background-color: rgb(23, 159, 250);\r\n  height: 50px;\r\n}\r\n\r\n.container-fluid .toolbar {\r\n  padding-top: 15px;\r\n}\r\n\r\n.container-fluid span {\r\n  color: white;\r\n  background-color: none;\r\n  font-size: larger;\r\n  margin-left: 15px;\r\n}\r\n\r\nnav {\r\n  position: absolute;\r\n  width: 200px;\r\n  height: 100%;\r\n  background-color: #0b2638;\r\n}\r\n\r\nmat-tree {\r\n  background-color: #0b2638;\r\n}\r\n\r\nnav mat-tree mat-tree-node div button :hover {\r\n  background-color: #0b2638;\r\n  color: #fff;\r\n}\r\n\r\n.mat-tree-node {\r\n  color: #fff;\r\n}\r\n\r\n.example-tree-invisible {\r\n  display: none;\r\n}\r\n\r\n.example-tree-invisible {\r\n  display: none;\r\n}\r\n\r\n.example-tree ul,\r\n.example-tree li {\r\n  margin-top: 0;\r\n  margin-bottom: 0;\r\n  list-style-type: none;\r\n}\r\n\r\n.example-tree .mat-nested-tree-node div[role=group] {\r\n  padding-left: 30px;\r\n}\r\n\r\n.example-tree div[role=group] > .mat-tree-node {\r\n  padding-left: 30px;\r\n}\r\n.asset{\r\n  position: relative;\r\n  top: 0;\r\n  left: 0;\r\n   margin-top:5%;\r\n  margin-left: 150px; \r\n  width: 80%;\r\n  height: 70%;\r\n}\r\n\r\n/* .example-container {\r\n  height: calc(100vh - 65px);\r\n}\r\n\r\n.example-sidenav-content {\r\n  height: calc(100vh - 98px);\r\n  border-radius: 10px;\r\n  margin: 16px;\r\n  margin-left: 32px;\r\n\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n\r\n  font-size: 2rem;\r\n  color: lightgray;\r\n}\r\n\r\n.example-sidenav {\r\n  margin: 16px;\r\n  width: 200px;\r\n  border-right: none;\r\n  background: #002b5c;\r\n  color: white;\r\n  border-radius: 10px;\r\n  padding: 16px;\r\n  text-align: center;\r\n} */\r\n\r\n\r\n\r\n",
+                    "data": ".container-fluid {\r\n  position: relative;\r\n  display: block;\r\n  background-color: rgb(23, 159, 250);\r\n  height: 50px;\r\n}\r\n\r\n.container-fluid .toolbar {\r\n  padding-top: 15px;\r\n}\r\n\r\n.container-fluid span {\r\n  color: white;\r\n  background-color: none;\r\n  font-size: larger;\r\n  margin-left: 15px;\r\n}\r\n\r\nnav {\r\n  position: absolute;\r\n  width: 200px;\r\n  height: 100%;\r\n  background-color: #0b2638;\r\n}\r\n\r\nmat-tree {\r\n  background-color: #0b2638;\r\n  padding-left:10%;\r\n}\r\n\r\nnav mat-tree mat-tree-node div button :hover {\r\n  background-color: #0b2638;\r\n  color: #fff;\r\n}\r\n\r\n.mat-tree-node {\r\n  color: #fff;\r\n}\r\n\r\n.example-tree-invisible {\r\n  display: none;\r\n}\r\n\r\n.example-tree-invisible {\r\n  display: none;\r\n}\r\n\r\n.example-tree ul,\r\n.example-tree li {\r\n  margin-top: 0;\r\n  margin-bottom: 0;\r\n  list-style-type: none;\r\n}\r\n\r\n.example-tree .mat-nested-tree-node div[role=group] {\r\n  padding-left: 30px;\r\n}\r\n\r\n.example-tree div[role=group] > .mat-tree-node {\r\n  padding-left: 30px;\r\n}\r\n.asset{\r\n  position: relative;\r\n  top: 0;\r\n  left: 0;\r\n  margin-top:5%;\r\n  margin-left: 250px; \r\n  width: 60%;\r\n  height: 30%;\r\n}\r\n\r\n.noAsset{\r\n  position: relative;\r\n  top: 0;\r\n  left: 0;\r\n  text-align: center;\r\n  /* border: 1px solid gray; */\r\n  /* box-shadow: 25px; */\r\n  width: 80%;\r\n  height: 30%;\r\n  padding-left: 20px;\r\n  padding-top: 15%;\r\n\r\n}\r\n\r\n\r\n\r\n",
                     "styleUrl": "./asset-chart-data.component.css"
                 }
             ],
@@ -486,7 +487,7 @@
                         "deprecationMessage": ""
                     }
                 ],
-                "line": 70,
+                "line": 63,
                 "jsdoctags": [
                     {
                         "name": "assetData",
@@ -511,69 +512,7 @@
             "implements": [
                 "OnInit"
             ],
-            "templateData": "\n<div class=\"container-fluid\">\n    <div class=\"toolbar\">\n        <i class=\"fa fa-bars\" (click)=\"toggle()\"></i>\n      <span>Front-End Assignment</span>\n    </div>\n  </div>\n  <nav class='animated bounceInDown ' *ngIf=\"collapse\">\n    <mat-tree [dataSource]=\"dataSource\" [treeControl]=\"treeControl\" class=\"example-tree\">\n      <mat-tree-node (click)=\"selectAsset(node.id,node.name)\" *matTreeNodeDef=\"let node\" matTreeNodeToggle>\n        {{node.name}}\n      </mat-tree-node>\n      <mat-nested-tree-node *matTreeNodeDef=\"let node; when: hasChild\">\n        <div class=\"mat-tree-node\">\n          <button (click)=\"selectAsset(node.id,node.name)\" mat-icon-button matTreeNodeToggle [attr.aria-label]=\"'Toggle ' + node.name\" >\n            \n            <mat-icon  class=\"mat-icon-rtl-mirror\">\n              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}\n            </mat-icon>\n          </button>\n          {{node.name}}\n        </div>\n        <div [class.example-tree-invisible]=\"!treeControl.isExpanded(node)\" role=\"group\">\n          <ng-container matTreeNodeOutlet></ng-container>\n        </div>\n      </mat-nested-tree-node>\n    </mat-tree>\n  </nav>\n  <div class=\"asset\">\n    <!-- <div >\n      <div  *ngIf=\"nodeId == 5\">\n         No Asset Selected \n      </div>\n      <div *ngIf=\"nodeId < 5\" >\n        <canvas\n        baseChart\n        [type]=\"'line'\"\n        [legend]=\"false\"\n        [datasets]=\"chartData\"\n        [labels]=\"chartLabels\"\n        [options]=\"chartOptions\"\n      >\n      </canvas>\n      </div> -->\n      <div class=\"asset\">\n        <canvas baseChart\n                [datasets]=\"barChartData\"\n                [labels]=\"barChartLabels\"\n                [options]=\"barChartOptions\"\n                [legend]=\"barChartLegend\"\n                [type]=\"barChartType\">\n        </canvas>\n      </div>\n\n  </div>\n \n  \n\n  \n  \n"
-        },
-        {
-            "name": "AssetComponent",
-            "id": "component-AssetComponent-2a3fe8d39ddc080fd682298fe49a0a863cca3b889ee99bfba1e3027aa89297a09708f1d7f358938995df59565f701b35cf14c1758b8b69cd6b1e1693fa08b1a0",
-            "file": "src/app/components/test/asset.component.ts",
-            "encapsulation": [],
-            "entryComponents": [],
-            "inputs": [],
-            "outputs": [],
-            "providers": [],
-            "selector": "app-asset",
-            "styleUrls": [
-                "./asset.component.css"
-            ],
-            "styles": [],
-            "templateUrl": [
-                "./asset.component.html"
-            ],
-            "viewProviders": [],
-            "inputsClass": [],
-            "outputsClass": [],
-            "propertiesClass": [],
-            "methodsClass": [
-                {
-                    "name": "ngOnInit",
-                    "args": [],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 19,
-                    "deprecated": false,
-                    "deprecationMessage": ""
-                }
-            ],
-            "deprecated": false,
-            "deprecationMessage": "",
-            "hostBindings": [],
-            "hostListeners": [],
-            "description": "",
-            "rawdescription": "\n",
-            "type": "component",
-            "sourceCode": "import { Component, OnInit } from '@angular/core';\n// import { Chart } from 'node_modules/chart.js';\nimport { Chart, registerables} from 'chart.js';\nimport { AssetDataService } from 'src/app/services/asset-data.service';\n\n@Component({\n  selector: 'app-asset',\n  templateUrl: './asset.component.html',\n  styleUrls: ['./asset.component.css']\n})\nexport class AssetComponent implements OnInit {\n\n  \n\n  constructor() {\n    Chart.register(...registerables);\n   }\n\n  ngOnInit(): void {\n    const myChart = new Chart(\"myChart\", {\n      type: 'line',\n      data: {\n          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],\n          datasets: [{\n              label: '# of Votes',\n              data: [12, 19, 3, 5, 2, 3],\n              backgroundColor: [\n                  'rgba(255, 99, 132, 0.2)',\n                  'rgba(54, 162, 235, 0.2)',\n                  'rgba(255, 206, 86, 0.2)',\n                  'rgba(75, 192, 192, 0.2)',\n                  'rgba(153, 102, 255, 0.2)',\n                  'rgba(255, 159, 64, 0.2)'\n              ],\n              borderColor: [\n                  'rgba(255, 99, 132, 1)',\n                  'rgba(54, 162, 235, 1)',\n                  'rgba(255, 206, 86, 1)',\n                  'rgba(75, 192, 192, 1)',\n                  'rgba(153, 102, 255, 1)',\n                  'rgba(255, 159, 64, 1)'\n              ],\n              borderWidth: 1\n          }]\n      },\n      options: {\n          scales: {\n              y: {\n                  beginAtZero: true\n              }\n          }\n      }\n  });\n  }\n\n  \n}\n",
-            "assetsDirs": [],
-            "styleUrlsData": [
-                {
-                    "data": "\r\n#divChart{\r\n    display: block;\r\n    width: 800px;\r\n    height: 600px;\r\n}",
-                    "styleUrl": "./asset.component.css"
-                }
-            ],
-            "stylesData": "",
-            "constructorObj": {
-                "name": "constructor",
-                "description": "",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "args": [],
-                "line": 11
-            },
-            "implements": [
-                "OnInit"
-            ],
-            "templateData": "<div class=\"asset\">\n    <div id=\"divChart\">\n        <canvas id=\"myChart\" ></canvas>\n    </div>\n</div>\n\n\n\n"
+            "templateData": "<div class=\"container-fluid\">\n  <div class=\"toolbar\">\n    <i class=\"fa fa-bars\" (click)=\"toggle()\"></i>\n    <span>Front-End Assignment</span>\n  </div>\n</div>\n<nav class='animated bounceInDown ' *ngIf=\"collapse\">\n  <mat-tree [dataSource]=\"dataSource\" [treeControl]=\"treeControl\" class=\"example-tree\">\n    <mat-tree-node (click)=\"selectAsset(node.id,node.name)\" *matTreeNodeDef=\"let node\" matTreeNodeToggle>\n      {{node.name}}\n    </mat-tree-node>\n    <mat-nested-tree-node *matTreeNodeDef=\"let node; when: hasChild\">\n      <div class=\"mat-tree-node\">\n        <button (click)=\"selectAsset(node.id,node.name)\" mat-icon-button matTreeNodeToggle\n          [attr.aria-label]=\"'Toggle ' + node.name\">\n\n          <mat-icon class=\"mat-icon-rtl-mirror\">\n            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}\n          </mat-icon>\n        </button>\n        {{node.name}}\n      </div>\n      <div [class.example-tree-invisible]=\"!treeControl.isExpanded(node)\" role=\"group\">\n        <ng-container matTreeNodeOutlet></ng-container>\n      </div>\n    </mat-nested-tree-node>\n  </mat-tree>\n</nav>\n\n<div class=\"asset\">\n  <div *ngIf=\"nodeId==5\" class=\"noAsset\">\n    <h2>No Asset Selected</h2>\n    <span>You can select an asset from menu on the left</span>\n  </div>\n  <div *ngIf=\"nodeId\">\n    <h1></h1>\n    <canvas baseChart [datasets]=\"lineChartData\" [labels]=\"lineChartLabels\" [options]=\"lineChartOptions\"\n      [legend]=\"lineChartLegend\" [type]=\"lineChartType\">\n    </canvas>\n  </div>\n\n</div>\n"
         },
         {
             "name": "ButtonComponent",
@@ -856,13 +795,13 @@
     "modules": [
         {
             "name": "AppModule",
-            "id": "module-AppModule-f696531b523f77197ecc5abbcf3153f50168906e13745228976cdcf4bc6d1438cb67040bda9515f339a2066ab22db4927e7e5504e91cb535e1412526723a6722",
+            "id": "module-AppModule-b7ae7094d4562b320dd9d02a6fd5aa614cbfdb4d127e26d625683a371c15e858de57a5f4274857214e9d41235501eb02d866a53dde62db23064e44a8a068e3f2",
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
             "file": "src/app/app.module.ts",
             "methods": [],
-            "sourceCode": "import { NgModule } from '@angular/core';\nimport { BrowserModule } from '@angular/platform-browser';\nimport { DatePipe } from '@angular/common';\n\nimport { AppRoutingModule } from './app-routing.module';\nimport { AppComponent } from './app.component';\n\n\n// Angular Modules\nimport { BrowserAnimationsModule } from '@angular/platform-browser/animations';\nimport {MatIconModule} from '@angular/material/icon';\nimport { MatButtonModule } from '@angular/material/button';\nimport { MatTreeModule } from '@angular/material/tree';\nimport { MatToolbarModule } from '@angular/material/toolbar';\nimport { AssetComponent } from './components/test/asset.component';\nimport { HttpClientModule } from '@angular/common/http';\nimport { AssetDataService } from './services/asset-data.service';\nimport { AssetChartDataComponent } from './components/asset-chart-data/asset-chart-data.component';\nimport { NgChartsModule } from 'ng2-charts';\n\n\n\n\n@NgModule({\n  declarations: [\n    AppComponent,\n    AssetChartDataComponent,\n    AssetComponent\n  ],\n  imports: [\n    BrowserModule,\n    AppRoutingModule,\n    HttpClientModule,\n    BrowserAnimationsModule,\n    MatTreeModule,\n    MatButtonModule,\n    MatIconModule,\n    MatToolbarModule,\n    NgChartsModule\n  ],\n  providers: [AssetDataService,DatePipe],\n  bootstrap: [AppComponent]\n})\nexport class AppModule { }\n",
+            "sourceCode": "import { NgModule } from '@angular/core';\nimport { BrowserModule } from '@angular/platform-browser';\nimport { DatePipe } from '@angular/common';\n\nimport { AppRoutingModule } from './app-routing.module';\nimport { AppComponent } from './app.component';\nimport { HttpClientModule } from '@angular/common/http';\n\n\n// Angular Modules\nimport { BrowserAnimationsModule } from '@angular/platform-browser/animations';\nimport {MatIconModule} from '@angular/material/icon';\nimport { MatButtonModule } from '@angular/material/button';\nimport { MatTreeModule } from '@angular/material/tree';\nimport { MatToolbarModule } from '@angular/material/toolbar';\n\nimport { AssetDataService } from './services/asset-data.service';\nimport { AssetChartDataComponent } from './components/asset-chart-data/asset-chart-data.component';\nimport { NgChartsModule } from 'ng2-charts';\n\n\n\n\n@NgModule({\n  declarations: [\n    AppComponent,\n    AssetChartDataComponent,\n    \n  ],\n  imports: [\n    BrowserModule,\n    AppRoutingModule,\n    HttpClientModule,\n    BrowserAnimationsModule,\n    MatTreeModule,\n    MatButtonModule,\n    MatIconModule,\n    MatToolbarModule,\n    NgChartsModule\n  ],\n  providers: [AssetDataService,DatePipe],\n  bootstrap: [AppComponent]\n})\nexport class AppModule { }\n",
             "children": [
                 {
                     "type": "providers",
@@ -880,9 +819,6 @@
                         },
                         {
                             "name": "AssetChartDataComponent"
-                        },
-                        {
-                            "name": "AssetComponent"
                         }
                     ]
                 },
@@ -914,13 +850,13 @@
         },
         {
             "name": "AppRoutingModule",
-            "id": "module-AppRoutingModule-5360ae04d65889b66d2a5029f08e998bdae07e2ef0cef8ed08e0476fad02e3f2c6250250565cf2c17bbcf953235529daa28fc1fec6d439cc5d16f2a7d7510fd8",
+            "id": "module-AppRoutingModule-7a26473f9889410986014d964a56178201f9859431a852d1f2d707072b98436604506961d0995617d1d2cfe032cb605653a984e55c32ac44e44cff2fe9b098a1",
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
             "file": "src/app/app-routing.module.ts",
             "methods": [],
-            "sourceCode": "import { NgModule } from '@angular/core';\nimport { RouterModule, Routes } from '@angular/router';\nimport { AssetComponent } from './components/test/asset.component';\nimport { AssetChartDataComponent } from './components/asset-chart-data/asset-chart-data.component';\n\nconst routes: Routes = [\n  // {path: '', redirectTo:'asset-chart-data', pathMatch: 'full'},\n  // {path: 'asset-chart-data', component: AssetChartDataComponent},\n  // {path: 'asset1', component: AssetComponent },\n ];\n\n@NgModule({\n  imports: [RouterModule.forRoot(routes)],\n  exports: [RouterModule]\n})\nexport class AppRoutingModule { }\n",
+            "sourceCode": "import { NgModule } from '@angular/core';\nimport { RouterModule, Routes } from '@angular/router';\n\nimport { AssetChartDataComponent } from './components/asset-chart-data/asset-chart-data.component';\n\nconst routes: Routes = [\n  // {path: '', redirectTo:'asset', pathMatch: 'full'},\n  // {path: 'asset-chart-data', component: AssetChartDataComponent},\n  // {path: 'asset', component: AssetComponent },\n ];\n\n@NgModule({\n  imports: [RouterModule.forRoot(routes)],\n  exports: [RouterModule]\n})\nexport class AppRoutingModule { }\n",
             "children": [
                 {
                     "type": "providers",
@@ -965,21 +901,21 @@
                 "name": "environment",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/environments/environment.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "object",
-                "defaultValue": "{\n  production: false\n}"
-            },
-            {
-                "name": "environment",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "src/environments/environment.prod.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "object",
                 "defaultValue": "{\n  production: true\n}"
+            },
+            {
+                "name": "environment",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/environments/environment.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "object",
+                "defaultValue": "{\n  production: false\n}"
             },
             {
                 "name": "Large",
@@ -1136,18 +1072,6 @@
                     "type": "literal type"
                 }
             ],
-            "src/environments/environment.ts": [
-                {
-                    "name": "environment",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/environments/environment.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "object",
-                    "defaultValue": "{\n  production: false\n}"
-                }
-            ],
             "src/environments/environment.prod.ts": [
                 {
                     "name": "environment",
@@ -1158,6 +1082,18 @@
                     "deprecationMessage": "",
                     "type": "object",
                     "defaultValue": "{\n  production: true\n}"
+                }
+            ],
+            "src/environments/environment.ts": [
+                {
+                    "name": "environment",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/environments/environment.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "object",
+                    "defaultValue": "{\n  production: false\n}"
                 }
             ],
             "src/stories/Button.stories.ts": [
@@ -1353,15 +1289,6 @@
                 "type": "class",
                 "linktype": "classe",
                 "name": "Response",
-                "coveragePercent": 0,
-                "coverageCount": "0/3",
-                "status": "low"
-            },
-            {
-                "filePath": "src/app/components/test/asset.component.ts",
-                "type": "component",
-                "linktype": "component",
-                "name": "AssetComponent",
                 "coveragePercent": 0,
                 "coverageCount": "0/3",
                 "status": "low"
