@@ -44,6 +44,7 @@ const TREE_DATA: treeNode[] = [
 export class AssetChartDataComponent implements OnInit {
 
   collapse: boolean = true;
+  activeNode= '';
   responseData: Response[] = [];
   values: number[] = [];
   dates: Array<any> = [];
@@ -51,6 +52,7 @@ export class AssetChartDataComponent implements OnInit {
   temp1: Array<any> = [];
   val1: number[] = [];
   nodeId: number = 5;
+  nodeName:string='';
 
   lineChartOptions: any;
   lineChartLabels: any;
@@ -83,6 +85,7 @@ export class AssetChartDataComponent implements OnInit {
 
   selectAsset(id: number, name: string) {
     this.nodeId = id;
+    this.nodeName=name;
     // console.log(this.nodeId);
 
     this.responseData.forEach(element => {
@@ -134,7 +137,7 @@ export class AssetChartDataComponent implements OnInit {
       };
       this.lineChartLabels = this.dates;
       this.lineChartType = 'line';
-      this.lineChartLegend = true;
+      this.lineChartLegend = false;
       this.lineChartData = [
         { data: this.values, label: name, borderColor: '#87CEEB', pointRadius: 0 },
       ];
