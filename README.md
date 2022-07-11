@@ -29,5 +29,6 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 Project Title :- Energy Measuring Chart 
 
-Project Description :- This project is build to display the energy measuring data of electrical devices in the form of chart.
+Project Description :- This project is build to display the energy measuring data of electrical devices in the form of chart. In this project we designed the basic UI to display the line charts of four assets or energy data.
+The project includes the side navigation bar containing tree data in which asset number is display. On click of particular asset the data is shown in the form of line chart on UI and if there is no asset selected then No Asset Selected text is shown.
 
