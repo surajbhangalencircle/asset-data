@@ -2,9 +2,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { DatePipe, SlicePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { elementAt } from 'rxjs';
 import { AssetDataService } from 'src/app/services/asset-data.service';
-import { Asset } from '../asset';
 import { Response } from './response';
 
 
@@ -60,15 +58,13 @@ export class AssetChartDataComponent implements OnInit {
   collapse: boolean = true;
   activeNode = '';
   responseData: Response[] = [];
-  values: number[] = [];
+  values: any[] = [];
   keys: Array<any> = [];
-  // response: Response = new Response;
-  temp1: Array<any> = [];
-  val1: number[] = [];
   nodeId: number = 5;
   nodeName: string = '';
-  treeNodeData: any = [];
   result: any = [];
+  dates: any = [];
+
 
 
   lineChartOptions: any;
@@ -91,54 +87,62 @@ export class AssetChartDataComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    // this.assetData.getData().subscribe(res => {
-    //   this.responseData = res;
-
-    //   this.assetData.getTreeNode().subscribe(data => this.treeNodeData = data);
-    // })
+    this.assetData.getData().subscribe(res => {
+      this.responseData = res;
+      // console.log(this.responseData);
+    })
   }
 
   toggle() {
     this.collapse = !this.collapse
   }
 
-  computeData(node: any) {
+  computeData(node: any): any {
     if (node.children.length === 0) {
-      console.log('leaf node: ', node.name);
-      this.assetData.getAssetById(node.id).subscribe(res => {
-        // this.result.push(res);
-        this.addAssetData(res);
-        console.log(res);
+      const measurementsData = this.responseData.find((element: any) => element.assetId == node.id)
+
+      let dateTemp: any = [];
+      let valueTemp: any = [];
+      Object.entries(measurementsData?.measurements).forEach(([keys, value]) => {
+        if (this.dates.length === 0) {
+          dateTemp.push(this.datePipe.transform(keys, 'MMM yy'));
+        }
+        valueTemp.push(value);
       });
+      if (dateTemp.length != 0) {
+        this.dates = dateTemp;
+      }
+      return valueTemp;
     }
     else {
+      let tempSum: any = [];
       for (let child of node.children) {
-       this.computeData(child);
+        const values = this.computeData(child);
+        if (tempSum.length === 0) {
+          tempSum = values;
+        } else {
+          values.map((value: any, index: number) => {
+            tempSum[index] = tempSum[index] + value;
+          });
+        }
+
       }
+      return tempSum;
     }
   }
 
-  private addAssetData(res: any) {
-    let da: any = [];
-    let keys: any = [];
-    let val2: any = [];
-    //  this.da.forEach((element:any)=>{
-    for (const [key, value] of Object.entries(res.measurements)) {
-      const e = this.datePipe.transform(key, 'LLL-yy');
-      keys.push(e);
-      val2.push(value);
-    }
+  selectAsset(node: any) {
+    this.nodeId = node.id;
+    this.nodeName = node.name;
+    // console.log(this.nodeName);
+    // console.log(parentId);
+    // this.result = [];
+    this.result = this.computeData(node);
+    // console.log(JSON.stringify(this.result));
+    // console.log(this.dates);
+    //this.dates=[];
+    // this.values=[];
 
-    //  } )
-    this.displayChart(keys, val2)
-    // console.log(val2);
-    // console.log(keys)
-  }
-
-  displayChart(keys: any, val2: any) {
-    console.log('Binding data');
-    // console.log(keys);
-    // console.log(val2);
     this.lineChartOptions = {
       scales: {
         x: {
@@ -151,28 +155,10 @@ export class AssetChartDataComponent implements OnInit {
       responsive: true,
     };
 
-    this.lineChartLabels = keys;
+    this.lineChartLabels = this.dates;
     this.lineChartType = 'line';
     this.lineChartLegend = false;
-    this.lineChartData = [{ data: val2, label: name, borderColor: '#87CEEB', pointRadius: 0 }]
-  }
-
-
-  selectAsset(node: any) {
-    this.nodeId = node.id;
-    this.nodeName = node.name;
-    // console.log(this.nodeName);
-    // console.log(parentId);
-    // this.result = [];
-    this.computeData(node);
-    // console.log(JSON.stringify(this.result));
-    // setTimeout(() => {
-    //   console.log(JSON.stringify(this.result))
-    // }, 2000);
-    // console.log(this.treeNodeData);
-
-
-
+    this.lineChartData = [{ data: this.result, label: name, borderColor: '#87CEEB', pointRadius: 0 }]
 
   }
 
