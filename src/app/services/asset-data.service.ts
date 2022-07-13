@@ -16,4 +16,7 @@ export class AssetDataService {
   getTreeNode(){
     return this.httpClient.get('assets/assets.json');
   }
+  getAssetById(id:number):Observable<any>{
+    return this.httpClient.get('http://localhost:3000/measurement/' + id)
+  }
 }

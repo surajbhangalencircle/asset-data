@@ -1,5 +1,6 @@
-export class Response{
-    assetId : number = 0;
-    measurements : Map<string,number> =new Map();  
+export interface Response{
+    assetId : number;
+    // measurements : Map<string,number> =new Map();  
+    measurements : Object;
 
 }
