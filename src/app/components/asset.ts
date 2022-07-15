@@ -1,5 +1,5 @@
 export interface Asset {
     id: number;
     name: string;
-    parentId: number;
+    parentId: number | null;
   }
