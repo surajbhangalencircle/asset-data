@@ -27,12 +27,12 @@
 </nav>
 
 <div class="asset">
-  <div *ngIf="nodeId==5" class="noAsset">
+  <div *ngIf="nodeId==8" class="noAsset">
     <h2>No Asset Selected</h2>
     <span>You can select an asset from menu on the left.</span>
   </div>
-  <div *ngIf="nodeId <5">
-    <h2 *ngIf="nodeId <5">{{nodeName}}</h2>
+  <div *ngIf="nodeId <8">
+    <h2 *ngIf="nodeId <8">{{nodeName}}</h2>
     <canvas baseChart 
     [datasets]="lineChartData"
     [labels]="lineChartLabels" 
@@ -40,13 +40,6 @@
     [legend]="lineChartLegend"
     [type]="lineChartType">
     </canvas>
-    <!-- <canvas baseChart 
-    [type]="lineChartType"
-            [legend]="lineChartLegend"
-            [datasets]="lineChartData"
-            [labels]="lineChartLabels"
-            [options]="lineChartOptions">
-    </canvas> -->
   </div>
 
 </div>

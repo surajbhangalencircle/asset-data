@@ -1,3 +1,4 @@
+import { AnimationFactory } from '@angular/animations';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { DatePipe, SlicePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -14,40 +15,8 @@ interface treeNode {
 }
 
 
-let treeData: treeNode[] = [
-  {
-    name: 'Asset 0',
-    id: 0,
-    parentId: null,
-    children: []
-  },
-  {
-    name: 'Asset 1',
-    id: 1,
-    parentId: null,
-    children: [{
-      name: 'Asset 2',
-      id: 2,
-      parentId: 1,
-      children: []
-    },
-    {
-      name: 'Asset 3',
-      id: 3,
-      parentId: 1,
-      children: [
-        {
-          name: 'Asset 4',
-          id: 4,
-          parentId: 3,
-          children: [
-          ]
-        },
-      ],
-    },
-    ],
-  },
-]
+
+
 @Component({
   selector: 'app-asset-chart-data',
   templateUrl: './asset-chart-data.component.html',
@@ -55,15 +24,60 @@ let treeData: treeNode[] = [
 })
 export class AssetChartDataComponent implements OnInit {
 
+
+  treeData: treeNode[] = [
+    // {
+    //   name: 'Asset 0',
+    //   id: 0,
+    //   parentId: null,
+    //   children: []
+    // },
+    // {
+    //   name: 'Asset 1',
+    //   id: 1,
+    //   parentId: null,
+    //   children: [{
+    //     name: 'Asset 2',
+    //     id: 2,
+    //     parentId: 1,
+    //     children: []
+    //   },
+    //   {
+    //     name: 'Asset 3',
+    //     id: 3,
+    //     parentId: 1,
+    //     children: [
+    //       {
+    //         name: 'Asset 4',
+    //         id: 4,
+    //         parentId: 3,
+    //         children: [
+    //         ]
+    //       },
+    //       {
+    //         name: 'Asset 5',
+    //         id: 5,
+    //         parentId: 4,
+    //         children: [
+
+    //         ],
+    //       },
+    //     ],
+    //   },
+    //   ],
+    // },
+  ]
+
   collapse: boolean = true;
   activeNode = '';
   responseData: Response[] = [];
   values: any[] = [];
   keys: Array<any> = [];
-  nodeId: number = 5;
+  nodeId: number = 8;
   nodeName: string = '';
   result: any = [];
   dates: any = [];
+  assetNodes: any = [];
 
 
 
@@ -78,8 +92,7 @@ export class AssetChartDataComponent implements OnInit {
   dataSource = new MatTreeNestedDataSource<treeNode>();
 
   constructor(private assetData: AssetDataService, private datePipe: DatePipe) {
-    this.dataSource.data = treeData;
-    console.log(this.dataSource);
+
   }
 
   hasChild = (a: number, node: treeNode) => {
@@ -90,6 +103,11 @@ export class AssetChartDataComponent implements OnInit {
     this.assetData.getData().subscribe(res => {
       this.responseData = res;
       // console.log(this.responseData);
+    });
+    this.assetData.getTreeNode().subscribe(resp => {
+      this.assetNodes = resp;
+      this.dataSource.data = this.dynamicTree(this.assetNodes);
+      console.log(this.dataSource);
     })
   }
 
@@ -100,7 +118,6 @@ export class AssetChartDataComponent implements OnInit {
   computeData(node: any): any {
     if (node.children.length === 0) {
       const measurementsData = this.responseData.find((element: any) => element.assetId == node.id)
-
       let dateTemp: any = [];
       let valueTemp: any = [];
       Object.entries(measurementsData?.measurements).forEach(([keys, value]) => {
@@ -125,7 +142,6 @@ export class AssetChartDataComponent implements OnInit {
             tempSum[index] = tempSum[index] + value;
           });
         }
-
       }
       return tempSum;
     }
@@ -140,8 +156,8 @@ export class AssetChartDataComponent implements OnInit {
     this.result = this.computeData(node);
     // console.log(JSON.stringify(this.result));
     // console.log(this.dates);
-    //this.dates=[];
-    // this.values=[];
+    console.log(this.dates);
+    console.log(this.result);
 
     this.lineChartOptions = {
       scales: {
@@ -159,7 +175,25 @@ export class AssetChartDataComponent implements OnInit {
     this.lineChartType = 'line';
     this.lineChartLegend = false;
     this.lineChartData = [{ data: this.result, label: name, borderColor: '#87CEEB', pointRadius: 0 }]
-
   }
+
+  dynamicTree(treeData: any): treeNode[] {
+    const map: any = {};
+    treeData.forEach((res: any) => map[res.id] = res);
+    const assetTree: any[] = [];
+    treeData.forEach((data: any) => {
+      data['children'] = [];
+      console.log(treeData)
+      if (data.parentId !== null) {
+        map[data.parentId].children = map[data.parentId]?.children || [];
+        map[data.parentId].children.push(map[data.id]);
+      } else {
+        assetTree.push(map[data.id]);
+      }
+    });
+
+    return assetTree;
+  };
+
 
 }
