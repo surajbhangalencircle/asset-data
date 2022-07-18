@@ -10,13 +10,13 @@ export class AssetDataService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getData():Observable<Response[]>{
+  getDataOfMeasurements():Observable<Response[]>{
     return this.httpClient.get<Response[]>('assets/measurements.json');
   }
-  getTreeNode(){
+  getTreeNode():Observable<any>{
     return this.httpClient.get('assets/assets.json');
   }
-  getAssetById(id:number):Observable<any>{
-    return this.httpClient.get('http://localhost:3000/measurement/' + id)
-  }
+  // getAssetById(id:number):Observable<any>{
+  //   return this.httpClient.get('http://localhost:3000/measurement/' + id)
+  // }
 }
