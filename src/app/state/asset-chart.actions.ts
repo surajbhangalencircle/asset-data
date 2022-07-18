@@ -1,7 +1,8 @@
-
-import { Update } from '@ngrx/entity';
 import { createAction, props } from '@ngrx/store';
-import { Asset } from '../components/asset';
+import { AssetData } from '../model/assetData.model';
+import { Asset } from '../model/assets.model';
+import { Measurement } from '../model/measurements.model';
+
 
 
 
@@ -10,34 +11,28 @@ export const loadAssets = createAction(
 );
 
 export const assetsLoaded = createAction(
-  '[assets Effect] assets Loaded Successfully',
+  '[Assets Effect] assets Loaded Successfully',
   props<{asset: Asset[]}>()
 );
 
-export const assets0 = createAction(
-    '[asset0 Effect] asset0 Loaded Successfully',
-    props<{assetId: string}>()
+export const loadMeasurements = createAction(
+    '[Measurements] Load measurements via service',
   );
 
-  export const assets1 = createAction(
-    '[asset1 Effect] asset1 Loaded Successfully',
-    props<{assetId: string}>()
+  export const measurementsLoaded = createAction(
+    '[Measurements Effect] Measurements Loaded Successfully',
+    props<{measurements : Measurement[]}>()
   );
 
-  export const assets2 = createAction(
-    '[asset2 Effect] asset2 Loaded Successfully',
-    props<{assetId: string}>()
-  );
+  export const currentAsset = createAction(
+    '[Assets] Get currently selected asset',
+    props<{assetId : number}>()
+)
 
-  export const assets3 = createAction(
-    '[asset3 Effect] asset3 Loaded Successfully',
-    props<{assetId: string}>()
-  );
-
-  export const assets4 = createAction(
-    '[asset4 Effect] asset4 Loaded Successfully',
-    props<{assetId: string}>()
-  );
+export const setChartData = createAction(
+    '[assetData] Get asset data for current asset',
+    props<{assetData : AssetData[]}>()
+)
 
 
 // export const createAsset = createAction(
@@ -50,16 +45,17 @@ export const assets0 = createAction(
 //   props<{assetId: string}>()
 // );
 
-export const updateAsset = createAction(
-  '[assets List Operations] Update Asset',
-  props<{update: Update<Asset>}>()
-);
+// export const updateAsset = createAction(
+//   '[assets List Operations] Update Asset',
+//   props<{update: Update<Asset>}>()
+// );
 
-export const employeeActionTypes = {
+export const assetActionTypes = {
   loadAssets,
   assetsLoaded,
-//   createAsset,
-//   deleteAsset,
-  updateAsset
+  loadMeasurements,
+  measurementsLoaded,
+  currentAsset,
+  setChartData
 };
 
