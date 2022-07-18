@@ -4,6 +4,8 @@ import { DatePipe } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AssetChartDataComponent } from './components/asset-chart-data/asset-chart-data.component';
+import { AssetDataService } from './services/asset-data.service';
 import { HttpClientModule } from '@angular/common/http';
 
 
@@ -14,9 +16,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
-import { AssetDataService } from './services/asset-data.service';
-import { AssetChartDataComponent } from './components/asset-chart-data/asset-chart-data.component';
 import { NgChartsModule } from 'ng2-charts';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { metaReducers, reducers } from './store';
 
 
 
@@ -24,8 +27,7 @@ import { NgChartsModule } from 'ng2-charts';
 @NgModule({
   declarations: [
     AppComponent,
-    AssetChartDataComponent,
-    
+    AssetChartDataComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +38,11 @@ import { NgChartsModule } from 'ng2-charts';
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
-    NgChartsModule
+    NgChartsModule,
+    EffectsModule.forRoot([]),
+    StoreModule.forRoot((reducers), {
+      metaReducers
+    }),
   ],
   providers: [AssetDataService,DatePipe],
   bootstrap: [AppComponent]
