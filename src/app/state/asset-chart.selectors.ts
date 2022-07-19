@@ -2,18 +2,9 @@ import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { AssetDataState, AssetState, MeasurementState, selectAll } from "./asset-chart.reducers";
 
 
-
-
-
-
 export const assetFeatureSelector = createFeatureSelector<AssetState>('asset');
 export const measurementFeatureSelector = createFeatureSelector<MeasurementState>('measurement');
 export const assetDataFeatureSelector = createFeatureSelector<AssetDataState>('assetData');
-
-// export const getAllAssets = createSelector(
-//     assetFeatureSelector,
-//   selectAll
-// );
 
 export const areAssetsLoaded = createSelector(
     assetFeatureSelector,
