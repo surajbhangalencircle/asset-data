@@ -11,22 +11,16 @@ import { assetActionTypes } from "./asset-chart.actions";
 export interface AssetState extends EntityState<Asset> {
     assetsLoaded: boolean;
 }
-
 export const assetAdapter: EntityAdapter<Asset> = createEntityAdapter<Asset>();
-
 export const assetinitialState = assetAdapter.getInitialState({
     assetsLoaded: false
 });
 
 
-
-
 export interface MeasurementState extends EntityState<Measurement> {
     measurementsLoaded: boolean;
 }
-
 export const measurementAdapter: EntityAdapter<Measurement> = createEntityAdapter<Measurement>();
-
 export const measurementinitialState = measurementAdapter.getInitialState({
     measurementsLoaded: false
 });
@@ -37,9 +31,7 @@ export const measurementinitialState = measurementAdapter.getInitialState({
 export interface AssetDataState extends EntityState<AssetData> {
     setChartData: boolean;
 }
-
 export const assetDataAdapter: EntityAdapter<AssetData> = createEntityAdapter<AssetData>();
-
 export const assetDatainitialState = assetDataAdapter.getInitialState({
     setChartData: false
 });
@@ -47,7 +39,6 @@ export const assetDatainitialState = assetDataAdapter.getInitialState({
 
 export const assetReducer = createReducer(
     assetinitialState,
-
     on(assetActionTypes.assetsLoaded, (state, action) => {
         return assetAdapter.setAll(
             action.asset,
@@ -58,7 +49,6 @@ export const assetReducer = createReducer(
 
 export const measurementReducer = createReducer(
     measurementinitialState,
-
     on(assetActionTypes.measurementsLoaded, (state, action) => {
         return measurementAdapter.setAll(
             action.measurements,
@@ -70,7 +60,6 @@ export const measurementReducer = createReducer(
 
 export const assetDataReducer = createReducer(
     assetDatainitialState,
-
     on(assetActionTypes.setChartData, (state, action) => {
         return assetDataAdapter.setAll(
             action.assetData,
@@ -80,4 +69,4 @@ export const assetDataReducer = createReducer(
 );
 
 
-  export const { selectAll, selectIds } = assetDataAdapter.getSelectors();
+export const { selectAll, selectIds } = assetDataAdapter.getSelectors();
