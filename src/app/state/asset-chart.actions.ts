@@ -12,43 +12,27 @@ export const loadAssets = createAction(
 
 export const assetsLoaded = createAction(
   '[Assets Effect] assets Loaded Successfully',
-  props<{asset: Asset[]}>()
+  props<{ asset: Asset[] }>()
 );
 
 export const loadMeasurements = createAction(
-    '[Measurements] Load measurements via service',
-  );
+  '[Measurements] Load measurements via service',
+);
 
-  export const measurementsLoaded = createAction(
-    '[Measurements Effect] Measurements Loaded Successfully',
-    props<{measurements : Measurement[]}>()
-  );
+export const measurementsLoaded = createAction(
+  '[Measurements Effect] Measurements Loaded Successfully',
+  props<{ measurements: Measurement[] }>()
+);
 
-  export const currentAsset = createAction(
-    '[Assets] Get currently selected asset',
-    props<{assetId : number}>()
-)
+export const currentAsset = createAction(
+  '[Assets] Get currently selected asset',
+  props<{ assetId: number }>()
+);
 
 export const setChartData = createAction(
-    '[assetData] Get asset data for current asset',
-    props<{assetData : AssetData[]}>()
-)
-
-
-// export const createAsset = createAction(
-//   '[CreateAsset] Create Asset',
-//   props<{asset: Asset}>()
-// );
-
-// export const deleteAsset = createAction(
-//   '[assets List Operations] Delete Asset',
-//   props<{assetId: string}>()
-// );
-
-// export const updateAsset = createAction(
-//   '[assets List Operations] Update Asset',
-//   props<{update: Update<Asset>}>()
-// );
+  '[assetData] Get asset data for current asset',
+  props<{ assetData: AssetData[] }>()
+);
 
 export const assetActionTypes = {
   loadAssets,
