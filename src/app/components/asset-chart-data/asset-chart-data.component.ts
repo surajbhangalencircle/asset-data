@@ -3,7 +3,9 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { DatePipe, SlicePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
+import { createAction, Store } from '@ngrx/store';
 import { AssetDataService } from 'src/app/services/asset-data.service';
+import { loadMeasurements, measurementsLoaded } from 'src/app/state/asset-chart.actions';
 import { Response } from './response';
 
 
@@ -91,16 +93,14 @@ export class AssetChartDataComponent implements OnInit {
   treeControl = new NestedTreeControl<treeNode>((node) => node.children);
   dataSource = new MatTreeNestedDataSource<treeNode>();
 
-  constructor(private assetData: AssetDataService, private datePipe: DatePipe) {
-
-  }
+  constructor(private assetData: AssetDataService, private datePipe: DatePipe, private store: Store) { }
 
   hasChild = (a: number, node: treeNode) => {
     return !!node.children && node.children.length > 0;
   };
 
   ngOnInit(): void {
-    this.assetData.getData().subscribe(res => {
+    this.assetData.getDataOfMeasurements().subscribe(res => {
       this.responseData = res;
       // console.log(this.responseData);
     });
@@ -194,6 +194,11 @@ export class AssetChartDataComponent implements OnInit {
 
     return assetTree;
   };
+
+
+  // method(){
+  //   this.store.dispatch()
+  // }
 
 
 }
