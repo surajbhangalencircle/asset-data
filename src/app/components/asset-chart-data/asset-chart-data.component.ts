@@ -6,6 +6,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { createAction, Store } from '@ngrx/store';
 import { AssetDataService } from 'src/app/services/asset-data.service';
 import { loadMeasurements, measurementsLoaded } from 'src/app/state/asset-chart.actions';
+import { areAssetsLoaded } from 'src/app/state/asset-chart.selectors';
 import { Response } from './response';
 
 
@@ -93,22 +94,25 @@ export class AssetChartDataComponent implements OnInit {
   treeControl = new NestedTreeControl<treeNode>((node) => node.children);
   dataSource = new MatTreeNestedDataSource<treeNode>();
 
-  constructor(private assetData: AssetDataService, private datePipe: DatePipe, private store: Store) { }
+  constructor(private assetData: AssetDataService, private datePipe: DatePipe, private store: Store) {
+
+    this.store.select(areAssetsLoaded).subscribe(res=> console.log(res))
+   }
 
   hasChild = (a: number, node: treeNode) => {
     return !!node.children && node.children.length > 0;
   };
 
   ngOnInit(): void {
-    this.assetData.getDataOfMeasurements().subscribe(res => {
-      this.responseData = res;
-      // console.log(this.responseData);
-    });
-    this.assetData.getTreeNode().subscribe(resp => {
-      this.assetNodes = resp;
-      this.dataSource.data = this.dynamicTree(this.assetNodes);
-      console.log(this.dataSource);
-    })
+    // this.assetData.getDataOfMeasurements().subscribe(res => {
+    //   this.responseData = res;
+    //   // console.log(this.responseData);
+    // });
+    // this.assetData.getTreeNode().subscribe(resp => {
+    //   this.assetNodes = resp;
+    //   this.dataSource.data = this.dynamicTree(this.assetNodes);
+    //   console.log(this.dataSource);
+    // })
   }
 
   toggle() {
