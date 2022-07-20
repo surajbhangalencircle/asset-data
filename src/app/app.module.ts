@@ -20,6 +20,9 @@ import { NgChartsModule } from 'ng2-charts';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { metaReducers, reducers } from './store';
+import { assetEffects } from './state/asset-chart.effects';
+import { assetReducer } from './state/asset-chart.reducers';
+
 
 
 
@@ -39,6 +42,8 @@ import { metaReducers, reducers } from './store';
     MatIconModule,
     MatToolbarModule,
     NgChartsModule,
+    // StoreModule.forFeature('asset', assetReducer),
+    // EffectsModule.forFeature([assetEffects]),
     EffectsModule.forRoot([]),
     StoreModule.forRoot((reducers), {
       metaReducers
