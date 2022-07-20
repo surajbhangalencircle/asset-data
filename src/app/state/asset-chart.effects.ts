@@ -7,7 +7,7 @@ import { assetActionTypes } from './asset-chart.actions';
 import { Asset } from '../model/assets.model';
 
 @Injectable()
-export class CourseEffects {
+export class assetEffects {
 
 
   loadAssets$ = createEffect(() =>
