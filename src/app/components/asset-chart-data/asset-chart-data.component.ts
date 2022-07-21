@@ -4,9 +4,10 @@ import { DatePipe, SlicePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { createAction, Store } from '@ngrx/store';
+import { map, Observable } from 'rxjs';
 import { AssetDataService } from 'src/app/services/asset-data.service';
-import { loadMeasurements, measurementsLoaded } from 'src/app/state/asset-chart.actions';
-import { areAssetsLoaded } from 'src/app/state/asset-chart.selectors';
+import { loadAssets, loadMeasurements } from 'src/app/state/asset-chart.actions';
+import { areAssetsLoaded, measurementFeatureSelector } from 'src/app/state/asset-chart.selectors';
 import { Response } from './response';
 
 
@@ -81,6 +82,7 @@ export class AssetChartDataComponent implements OnInit {
   result: any = [];
   dates: any = [];
   assetNodes: any = [];
+  // asset$: Observable<any> | undefined;
 
 
 
@@ -96,7 +98,7 @@ export class AssetChartDataComponent implements OnInit {
 
   constructor(private assetData: AssetDataService, private datePipe: DatePipe, private store: Store) {
 
-    this.store.select(areAssetsLoaded).subscribe(res=> console.log(res))
+    
    }
 
   hasChild = (a: number, node: treeNode) => {
@@ -108,15 +110,21 @@ export class AssetChartDataComponent implements OnInit {
     //   this.responseData = res;
     //   // console.log(this.responseData);
     // });
-    // this.assetData.getTreeNode().subscribe(resp => {
+    // this.assetData.getTreeNode().subscribe(resp => { console.log(resp)
     //   this.assetNodes = resp;
     //   this.dataSource.data = this.dynamicTree(this.assetNodes);
     //   console.log(this.dataSource);
     // })
+    this.store.dispatch(loadAssets());
+
+    this.store.select(areAssetsLoaded).pipe(
+      map((res:any)=> { console.log(res);
+      })
+    );
   }
 
   toggle() {
-    this.collapse = !this.collapse
+    this.collapse = !this.collapse;
   }
 
   computeData(node: any): any {
@@ -198,11 +206,6 @@ export class AssetChartDataComponent implements OnInit {
 
     return assetTree;
   };
-
-
-  // method(){
-  //   this.store.dispatch()
-  // }
 
 
 }
