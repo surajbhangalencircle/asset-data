@@ -43,3 +43,11 @@ export const assetActionTypes = {
   setChartData
 };
 
+// export type assetActions = 
+//   | loadAssets
+//   | assetsLoaded
+//   | loadMeasurements
+//   | measurementsLoaded
+//   | currentAsset
+//   | setChartData;
+
