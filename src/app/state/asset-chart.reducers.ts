@@ -1,5 +1,5 @@
 import { createEntityAdapter, EntityAdapter, EntityState } from "@ngrx/entity";
-import { createReducer, on } from "@ngrx/store";
+import { createReducer, on, State } from "@ngrx/store";
 import { AssetData } from "../model/assetData.model";
 import { Asset } from "../model/assets.model";
 import { Measurement } from "../model/measurements.model";
@@ -53,7 +53,7 @@ export const measurementReducer = createReducer(
         return measurementAdapter.setAll(
             action.measurements,
             { ...state, measurementsLoaded: true }
-        );
+        ); 
     }),
 );
 
@@ -69,4 +69,28 @@ export const assetDataReducer = createReducer(
 );
 
 
+
+// export function reducer(state = assetDatainitialState, action: assetActionTypes): AssetState {
+//     switch (action.type) {
+//       case assetActionTypes.assetsLoaded: {
+//         return assetAdapter.({
+//           ...state,
+//           loading: false,
+//           error: null
+//         });
+//       }
+  
+//       case assetActionTypes.assetsLoaded: {
+//         return assetAdapter.addAll(action.payload, {
+//           ...state,
+//           loading: false,
+//           error: null
+//         });
+//       }
+  
+//       default: {
+//         return state;
+//       }
+//     }
+// }
 export const { selectAll, selectIds } = assetDataAdapter.getSelectors();
