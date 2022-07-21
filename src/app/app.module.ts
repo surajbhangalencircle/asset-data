@@ -22,6 +22,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { metaReducers, reducers } from './store';
 import { assetEffects } from './state/asset-chart.effects';
 import { assetReducer } from './state/asset-chart.reducers';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 
 
@@ -42,12 +43,13 @@ import { assetReducer } from './state/asset-chart.reducers';
     MatIconModule,
     MatToolbarModule,
     NgChartsModule,
-    // StoreModule.forFeature('asset', assetReducer),
-    // EffectsModule.forFeature([assetEffects]),
+    StoreModule.forFeature('asset', assetReducer),
+    EffectsModule.forFeature([assetEffects]),
     EffectsModule.forRoot([]),
     StoreModule.forRoot((reducers), {
       metaReducers
     }),
+    StoreDevtoolsModule.instrument({maxAge: 25})
   ],
   providers: [AssetDataService,DatePipe],
   bootstrap: [AppComponent]
