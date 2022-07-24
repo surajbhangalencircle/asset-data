@@ -1,20 +1,19 @@
 import { ActionReducerMap, MetaReducer } from '@ngrx/store';
 import { environment } from '../../environments/environment';
-import { assetDataReducer, AssetDataState, assetReducer, AssetState, measurementReducer, MeasurementState } from '../state/asset-chart.reducers';
+import * as fromCounter from '../state/asset-chart.reducers';
+import { AssetState, MeasurementState } from '../state/asset-chart.reducers';
 
 
 
-export interface AppState {
+export interface AppState {}
+export interface State {
+    "counter" : number;
     assetState : AssetState;
     measurementState: MeasurementState;
-    assetDataState: AssetDataState;
-
-}
-
+  }
+  
 export const reducers: ActionReducerMap<AppState> = {
-    assetState: assetReducer,
-    measurementState: measurementReducer,
-    assetDataState: assetDataReducer
+    "counter": fromCounter.reducer,
 };
 
 export const metaReducers: MetaReducer<AppState>[] = !environment.production ? [] : [];
