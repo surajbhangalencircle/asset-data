@@ -1,9 +1,8 @@
 import { createEntityAdapter, EntityAdapter, EntityState } from "@ngrx/entity";
-import { createReducer, on, State } from "@ngrx/store";
-import { AssetData } from "../model/assetData.model";
-import { Asset } from "../model/assets.model";
+import { createReducer, on } from "@ngrx/store";
+import { Asset } from "../components/asset";
 import { Measurement } from "../model/measurements.model";
-import { assetActionTypes } from "./asset-chart.actions";
+import { assetActionTypes, CounterActions, CounterActionTypes, } from "./asset-chart.actions";
 
 
 
@@ -17,52 +16,36 @@ export const assetinitialState = assetAdapter.getInitialState({
 });
 
 
-export interface MeasurementState extends EntityState<Measurement> {
-    measurementsLoaded: boolean;
-}
-export const measurementAdapter: EntityAdapter<Measurement> = createEntityAdapter<Measurement>();
-export const measurementinitialState = measurementAdapter.getInitialState({
-    measurementsLoaded: false
-});
-
-
-
-
-export interface AssetDataState extends EntityState<AssetData> {
-    setChartData: boolean;
-}
-export const assetDataAdapter: EntityAdapter<AssetData> = createEntityAdapter<AssetData>();
-export const assetDatainitialState = assetDataAdapter.getInitialState({
-    setChartData: false
-});
-
-
 export const assetReducer = createReducer(
     assetinitialState,
     on(assetActionTypes.assetsLoaded, (state, action) => {
         return assetAdapter.setAll(
             action.asset,
-            { ...state, assetsLoaded: true }
+            {
+                ...state,
+                assetsLoaded: true
+            }
         );
     }),
 );
+
+
+export interface MeasurementState extends EntityState<Measurement> {
+    measurementsLoaded: boolean;
+}
+export const measurementAdapter: EntityAdapter<Measurement> = createEntityAdapter<Measurement>({
+    selectId: (entity => entity.assetId)
+});
+export const measurementinitialState = measurementAdapter.getInitialState({
+    measurementsLoaded: false
+});
 
 export const measurementReducer = createReducer(
     measurementinitialState,
     on(assetActionTypes.measurementsLoaded, (state, action) => {
         return measurementAdapter.setAll(
+
             action.measurements,
-            { ...state, measurementsLoaded: true }
-        ); 
-    }),
-);
-
-
-export const assetDataReducer = createReducer(
-    assetDatainitialState,
-    on(assetActionTypes.setChartData, (state, action) => {
-        return assetDataAdapter.setAll(
-            action.assetData,
             { ...state, measurementsLoaded: true }
         );
     }),
@@ -70,27 +53,29 @@ export const assetDataReducer = createReducer(
 
 
 
-// export function reducer(state = assetDatainitialState, action: assetActionTypes): AssetState {
-//     switch (action.type) {
-//       case assetActionTypes.assetsLoaded: {
-//         return assetAdapter.({
-//           ...state,
-//           loading: false,
-//           error: null
-//         });
-//       }
-  
-//       case assetActionTypes.assetsLoaded: {
-//         return assetAdapter.addAll(action.payload, {
-//           ...state,
-//           loading: false,
-//           error: null
-//         });
-//       }
-  
-//       default: {
-//         return state;
-//       }
-//     }
-// }
-export const { selectAll, selectIds } = assetDataAdapter.getSelectors();
+export interface AssetDataState extends EntityState<Measurement> {
+    getSelected: boolean;
+}
+export const assetDataAdapter: EntityAdapter<Measurement> = createEntityAdapter<Measurement>();
+export const assetDatainitialState = assetDataAdapter.getInitialState({
+    getSelected: false
+});
+
+export const counterinitialState: number = 0;
+
+export function reducer(state = counterinitialState, action: CounterActions): number {
+    switch (action.type) {
+        case CounterActionTypes.Increment:
+            return state + 1;
+        case CounterActionTypes.Decrement:
+            return state - 1;
+        case CounterActionTypes.Reset:
+            return 0;
+        default:
+            return state;
+    }
+
+}
+
+
+export const { selectAll, selectIds } = assetAdapter.getSelectors();
