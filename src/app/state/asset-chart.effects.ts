@@ -4,11 +4,12 @@ import { concatMap, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { AssetDataService } from '../services/asset-data.service';
 import { assetActionTypes } from './asset-chart.actions';
-import { Asset } from '../model/assets.model';
+import { Asset } from '../components/asset';
+import { Measurement } from '../model/measurements.model';
+
 
 @Injectable()
 export class assetEffects {
-
 
   loadAssets$ = createEffect(() =>
     this.actions$.pipe(
@@ -21,14 +22,16 @@ export class assetEffects {
   loadMeasurements$ = createEffect(() =>
     this.actions$.pipe(
       ofType(assetActionTypes.loadMeasurements),
-      concatMap((action) => this.assetData.getDataOfMeasurements()),
-      map(measurements => assetActionTypes.measurementsLoaded({ measurements }))
+      concatMap(() => this.assetData.getDataOfMeasurements()),
+      map((measurements: Measurement[]) => assetActionTypes.measurementsLoaded({ measurements }))
     )
   );
 
-  createTreeView$ = createEffect(() =>
+  currentAsset$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(assetActionTypes.assetsLoaded)
+      ofType(assetActionTypes.currentAsset),
+      concatMap(() => this.assetData.getDataOfMeasurements()),
+      map((measurements: Measurement[]) => assetActionTypes.measurementsLoaded({ measurements }))
     )
   );
 
