@@ -21,7 +21,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { metaReducers, reducers } from './store';
 import { assetEffects } from './state/asset-chart.effects';
-import { assetReducer } from './state/asset-chart.reducers';
+import { assetReducer, measurementReducer } from './state/asset-chart.reducers';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 
@@ -44,6 +44,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     MatToolbarModule,
     NgChartsModule,
     StoreModule.forFeature('asset', assetReducer),
+    StoreModule.forFeature('measurement', measurementReducer),
     EffectsModule.forFeature([assetEffects]),
     EffectsModule.forRoot([]),
     StoreModule.forRoot((reducers), {
