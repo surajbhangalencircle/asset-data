@@ -1,6 +1,5 @@
-import { createAction, props } from '@ngrx/store';
-import { AssetData } from '../model/assetData.model';
-import { Asset } from '../model/assets.model';
+import { Action, createAction, props } from '@ngrx/store';
+import { Asset } from '../components/asset';
 import { Measurement } from '../model/measurements.model';
 
 
@@ -15,6 +14,7 @@ export const assetsLoaded = createAction(
   props<{ asset: Asset[] }>()
 );
 
+
 export const loadMeasurements = createAction(
   '[Measurements] Load measurements via service',
 );
@@ -24,15 +24,31 @@ export const measurementsLoaded = createAction(
   props<{ measurements: Measurement[] }>()
 );
 
+
 export const currentAsset = createAction(
   '[Assets] Get currently selected asset',
   props<{ assetId: number }>()
 );
 
-export const setChartData = createAction(
-  '[assetData] Get asset data for current asset',
-  props<{ assetData: AssetData[] }>()
-);
+export enum CounterActionTypes {
+  Increment = '[Counter] Increment',
+  Decrement = '[Counter] Decrement',
+  Reset = '[Counter] Reset'
+}
+
+export class CounterIncrement implements Action {
+  readonly type = CounterActionTypes.Increment;
+}
+
+export class CounterDecrement implements Action {
+  readonly type = CounterActionTypes.Decrement;
+}
+
+export class CounterReset implements Action {
+  readonly type = CounterActionTypes.Reset;
+}
+
+export type CounterActions = CounterIncrement | CounterDecrement | CounterReset;
 
 export const assetActionTypes = {
   loadAssets,
@@ -40,14 +56,6 @@ export const assetActionTypes = {
   loadMeasurements,
   measurementsLoaded,
   currentAsset,
-  setChartData
 };
 
-// export type assetActions = 
-//   | loadAssets
-//   | assetsLoaded
-//   | loadMeasurements
-//   | measurementsLoaded
-//   | currentAsset
-//   | setChartData;
 
