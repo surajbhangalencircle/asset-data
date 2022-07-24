@@ -3,12 +3,19 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { DatePipe, SlicePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { createAction, Store } from '@ngrx/store';
-import { map, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { map, mergeMap, Observable } from 'rxjs';
+
 import { AssetDataService } from 'src/app/services/asset-data.service';
-import { loadAssets, loadMeasurements } from 'src/app/state/asset-chart.actions';
-import { areAssetsLoaded, measurementFeatureSelector } from 'src/app/state/asset-chart.selectors';
+import { CounterDecrement, CounterIncrement, CounterReset, currentAsset, loadAssets, loadMeasurements } from 'src/app/state/asset-chart.actions';
+import { getAssets, getMeasurements, } from 'src/app/state/asset-chart.selectors';
+import { Asset } from '../asset';
+
+import * as fromStore from 'src/app/store/index';
+import { tap } from 'rxjs';
+import { Measurement } from 'src/app/model/measurements.model';
 import { Response } from './response';
+import { State } from 'src/app/store/index';
 
 
 interface treeNode {
@@ -29,77 +36,35 @@ interface treeNode {
 export class AssetChartDataComponent implements OnInit {
 
 
-  treeData: treeNode[] = [
-    // {
-    //   name: 'Asset 0',
-    //   id: 0,
-    //   parentId: null,
-    //   children: []
-    // },
-    // {
-    //   name: 'Asset 1',
-    //   id: 1,
-    //   parentId: null,
-    //   children: [{
-    //     name: 'Asset 2',
-    //     id: 2,
-    //     parentId: 1,
-    //     children: []
-    //   },
-    //   {
-    //     name: 'Asset 3',
-    //     id: 3,
-    //     parentId: 1,
-    //     children: [
-    //       {
-    //         name: 'Asset 4',
-    //         id: 4,
-    //         parentId: 3,
-    //         children: [
-    //         ]
-    //       },
-    //       {
-    //         name: 'Asset 5',
-    //         id: 5,
-    //         parentId: 4,
-    //         children: [
-
-    //         ],
-    //       },
-    //     ],
-    //   },
-    //   ],
-    // },
-  ]
+  treeData: treeNode[] = [];
 
   collapse: boolean = true;
   activeNode = '';
-  responseData: Response[] = [];
+  responseData: any[] = [];
+  responseData1: any[] = [];
   values: any[] = [];
   keys: Array<any> = [];
   nodeId: number = 8;
   nodeName: string = '';
   result: any = [];
   dates: any = [];
-  assetNodes: any = [];
-  // asset$: Observable<any> | undefined;
-
-
+  assetNodes: any[] = [];
+  asset$: Observable<Asset[]> | undefined;
+  total: Observable<number> | undefined;
 
   lineChartOptions: any;
   lineChartLabels: any;
   lineChartType: any;
   lineChartLegend: any;
   lineChartData: any = [];
+  measurementsData: any;
 
   data: any;
   treeControl = new NestedTreeControl<treeNode>((node) => node.children);
   dataSource = new MatTreeNestedDataSource<treeNode>();
 
-  constructor(private assetData: AssetDataService, private datePipe: DatePipe, private store: Store) {
-
-    
-   }
+  constructor(private assetData: AssetDataService, private datePipe: DatePipe, private store: Store<State>) {
+  }
 
   hasChild = (a: number, node: treeNode) => {
     return !!node.children && node.children.length > 0;
@@ -113,14 +78,26 @@ export class AssetChartDataComponent implements OnInit {
     // this.assetData.getTreeNode().subscribe(resp => { console.log(resp)
     //   this.assetNodes = resp;
     //   this.dataSource.data = this.dynamicTree(this.assetNodes);
-    //   console.log(this.dataSource);
     // })
-    this.store.dispatch(loadAssets());
 
-    this.store.select(areAssetsLoaded).pipe(
-      map((res:any)=> { console.log(res);
-      })
-    );
+    this.store.dispatch(loadMeasurements());
+    this.store.select(getMeasurements).pipe(
+      map((res => res))).subscribe((data: any) => {
+        this.responseData1 = Object.entries(data);
+        console.log(JSON.stringify(this.responseData1))
+        let res = JSON.parse(JSON.stringify(this.responseData1))
+        this.responseData = (res[1][1])
+        console.log(this.responseData)
+      });
+
+    this.store.dispatch(loadAssets());
+    this.store.select(getAssets).pipe(
+      map((res => res))).subscribe(data => {
+        this.assetNodes = data
+        this.dataSource.data = this.dynamicTree(this.assetNodes);
+      });
+
+      this.total = this.store.select('counter');
   }
 
   toggle() {
@@ -129,10 +106,11 @@ export class AssetChartDataComponent implements OnInit {
 
   computeData(node: any): any {
     if (node.children.length === 0) {
-      const measurementsData = this.responseData.find((element: any) => element.assetId == node.id)
+      // console.log(this.responseData[0]['measurements'])
+      this.measurementsData = this.responseData[node.id]
       let dateTemp: any = [];
       let valueTemp: any = [];
-      Object.entries(measurementsData?.measurements).forEach(([keys, value]) => {
+      Object.entries(this.measurementsData?.measurements).forEach(([keys, value]) => {
         if (this.dates.length === 0) {
           dateTemp.push(this.datePipe.transform(keys, 'MMM yy'));
         }
@@ -162,14 +140,7 @@ export class AssetChartDataComponent implements OnInit {
   selectAsset(node: any) {
     this.nodeId = node.id;
     this.nodeName = node.name;
-    // console.log(this.nodeName);
-    // console.log(parentId);
-    // this.result = [];
     this.result = this.computeData(node);
-    // console.log(JSON.stringify(this.result));
-    // console.log(this.dates);
-    console.log(this.dates);
-    console.log(this.result);
 
     this.lineChartOptions = {
       scales: {
@@ -189,13 +160,13 @@ export class AssetChartDataComponent implements OnInit {
     this.lineChartData = [{ data: this.result, label: name, borderColor: '#87CEEB', pointRadius: 0 }]
   }
 
-  dynamicTree(treeData: any): treeNode[] {
+  dynamicTree(treeData1: any): treeNode[] {
+    let treeData: any = JSON.parse(JSON.stringify(treeData1));
     const map: any = {};
     treeData.forEach((res: any) => map[res.id] = res);
     const assetTree: any[] = [];
     treeData.forEach((data: any) => {
       data['children'] = [];
-      console.log(treeData)
       if (data.parentId !== null) {
         map[data.parentId].children = map[data.parentId]?.children || [];
         map[data.parentId].children.push(map[data.id]);
@@ -206,6 +177,18 @@ export class AssetChartDataComponent implements OnInit {
 
     return assetTree;
   };
+
+  increment() {
+    this.store.dispatch(new CounterIncrement());
+  }
+
+  decrement() {
+    this.store.dispatch(new CounterDecrement());
+  }
+
+  reset() {
+    this.store.dispatch(new CounterReset());
+  }
 
 
 }
