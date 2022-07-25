@@ -1,20 +1,12 @@
-import { AnimationFactory } from '@angular/animations';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { DatePipe, SlicePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { Store } from '@ngrx/store';
-import { map, mergeMap, Observable } from 'rxjs';
-
+import { map, Observable } from 'rxjs';
 import { AssetDataService } from 'src/app/services/asset-data.service';
-import { CounterDecrement, CounterIncrement, CounterReset, currentAsset, loadAssets, loadMeasurements } from 'src/app/state/asset-chart.actions';
+import { CounterDecrement, CounterIncrement, CounterReset, loadAssets, loadMeasurements } from 'src/app/state/asset-chart.actions';
 import { getAssets, getMeasurements, } from 'src/app/state/asset-chart.selectors';
-import { Asset } from '../asset';
-
-import * as fromStore from 'src/app/store/index';
-import { tap } from 'rxjs';
-import { Measurement } from 'src/app/model/measurements.model';
-import { Response } from './response';
 import { State } from 'src/app/store/index';
 
 
@@ -37,7 +29,6 @@ export class AssetChartDataComponent implements OnInit {
 
 
   treeData: treeNode[] = [];
-
   collapse: boolean = true;
   activeNode = '';
   responseData: any[] = [];
@@ -49,7 +40,6 @@ export class AssetChartDataComponent implements OnInit {
   result: any = [];
   dates: any = [];
   assetNodes: any[] = [];
-  asset$: Observable<Asset[]> | undefined;
   total: Observable<number> | undefined;
 
   lineChartOptions: any;
@@ -79,10 +69,9 @@ export class AssetChartDataComponent implements OnInit {
     //   this.assetNodes = resp;
     //   this.dataSource.data = this.dynamicTree(this.assetNodes);
     // })
-
+    
     this.store.dispatch(loadMeasurements());
-    this.store.select(getMeasurements).pipe(
-      map((res => res))).subscribe((data: any) => {
+    this.store.select(getMeasurements).subscribe((data: any) => {
         this.responseData1 = Object.entries(data);
         console.log(JSON.stringify(this.responseData1))
         let res = JSON.parse(JSON.stringify(this.responseData1))
