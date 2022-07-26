@@ -5,7 +5,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { Store } from '@ngrx/store';
 import { map, Observable } from 'rxjs';
 import { AssetDataService } from 'src/app/services/asset-data.service';
-import { CounterDecrement, CounterIncrement, CounterReset, loadAssets, loadMeasurements } from 'src/app/state/asset-chart.actions';
+import { CounterDecrement, CounterIncrement, CounterReset, currentAsset, loadAssets, loadMeasurements } from 'src/app/state/asset-chart.actions';
 import { getAssets, getMeasurements, } from 'src/app/state/asset-chart.selectors';
 import { State } from 'src/app/store/index';
 
@@ -16,8 +16,6 @@ interface treeNode {
   parentId: any;
   children?: treeNode[];
 }
-
-
 
 
 @Component({
@@ -60,23 +58,18 @@ export class AssetChartDataComponent implements OnInit {
     return !!node.children && node.children.length > 0;
   };
 
-  ngOnInit(): void {
-    // this.assetData.getDataOfMeasurements().subscribe(res => {
-    //   this.responseData = res;
-    //   // console.log(this.responseData);
-    // });
-    // this.assetData.getTreeNode().subscribe(resp => { console.log(resp)
-    //   this.assetNodes = resp;
-    //   this.dataSource.data = this.dynamicTree(this.assetNodes);
-    // })
-    
+  /**
+   *
+   * @memberof AssetChartDataComponent
+   * @dispatch actions for asset & measurement
+   * 
+   */
+  ngOnInit(): void {    
     this.store.dispatch(loadMeasurements());
     this.store.select(getMeasurements).subscribe((data: any) => {
         this.responseData1 = Object.entries(data);
-        console.log(JSON.stringify(this.responseData1))
-        let res = JSON.parse(JSON.stringify(this.responseData1))
-        this.responseData = (res[1][1])
-        console.log(this.responseData)
+        let res = JSON.parse(JSON.stringify(this.responseData1));
+        this.responseData = (res[1][1]);
       });
 
     this.store.dispatch(loadAssets());
@@ -93,6 +86,13 @@ export class AssetChartDataComponent implements OnInit {
     this.collapse = !this.collapse;
   }
 
+  
+  /**
+   *
+   * @param {*} node
+   * @return {*}  {*}
+   * @memberof AssetChartDataComponent
+   */
   computeData(node: any): any {
     if (node.children.length === 0) {
       // console.log(this.responseData[0]['measurements'])
@@ -130,7 +130,7 @@ export class AssetChartDataComponent implements OnInit {
     this.nodeId = node.id;
     this.nodeName = node.name;
     this.result = this.computeData(node);
-
+    this.store.dispatch(currentAsset());
     this.lineChartOptions = {
       scales: {
         x: {
@@ -149,6 +149,12 @@ export class AssetChartDataComponent implements OnInit {
     this.lineChartData = [{ data: this.result, label: name, borderColor: '#87CEEB', pointRadius: 0 }]
   }
 
+  /**
+   *
+   * @param {*} treeData1
+   * @return {*}  {treeNode[]}
+   * @memberof AssetChartDataComponent
+   */
   dynamicTree(treeData1: any): treeNode[] {
     let treeData: any = JSON.parse(JSON.stringify(treeData1));
     const map: any = {};
@@ -167,6 +173,10 @@ export class AssetChartDataComponent implements OnInit {
     return assetTree;
   };
 
+  /**
+   *
+   * @dispatched actions for counter
+   */
   increment() {
     this.store.dispatch(new CounterIncrement());
   }
