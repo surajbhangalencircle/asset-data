@@ -1,16 +1,23 @@
 import { createEntityAdapter, EntityAdapter, EntityState } from "@ngrx/entity";
 import { createReducer, on } from "@ngrx/store";
-import { Asset } from "../components/asset";
+import { TreeAsset } from "../model/treeAsset.model";
 import { Measurement } from "../model/measurements.model";
 import { assetActionTypes, CounterActions, CounterActionTypes, } from "./asset-chart.actions";
 
 
 
 
-export interface AssetState extends EntityState<Asset> {
+/**
+ *
+ *
+ * @export
+ * @interface AssetState
+ * @extends {EntityState<Asset>}
+ */
+export interface AssetState extends EntityState<TreeAsset> {
     assetsLoaded: boolean;
 }
-export const assetAdapter: EntityAdapter<Asset> = createEntityAdapter<Asset>();
+export const assetAdapter: EntityAdapter<TreeAsset> = createEntityAdapter<TreeAsset>();
 export const assetinitialState = assetAdapter.getInitialState({
     assetsLoaded: false
 });
@@ -30,6 +37,13 @@ export const assetReducer = createReducer(
 );
 
 
+/**
+ *
+ *
+ * @export
+ * @interface MeasurementState
+ * @extends {EntityState<Measurement>}
+ */
 export interface MeasurementState extends EntityState<Measurement> {
     measurementsLoaded: boolean;
 }
@@ -52,14 +66,32 @@ export const measurementReducer = createReducer(
 );
 
 
-
-export interface AssetDataState extends EntityState<Measurement> {
+/**
+ *
+ *
+ * @export
+ * @interface AssetDataState
+ * @extends {EntityState<any>}
+ */
+export interface AssetDataState extends EntityState<any> {
     getSelected: boolean;
 }
-export const assetDataAdapter: EntityAdapter<Measurement> = createEntityAdapter<Measurement>();
+export const assetDataAdapter: EntityAdapter<any> = createEntityAdapter<any>();
 export const assetDatainitialState = assetDataAdapter.getInitialState({
     getSelected: false
 });
+
+
+export const assetDataReducer = createReducer(
+    assetDatainitialState,
+    on(assetActionTypes.currentAsset, (state, action) => {
+        return assetDataAdapter.setOne(
+            action.type,
+            { ...state, measurementsLoaded: true }
+        );
+    }),
+);
+
 
 export const counterinitialState: number = 0;
 

@@ -1,6 +1,6 @@
 import { Action, createAction, props } from '@ngrx/store';
-import { Asset } from '../components/asset';
 import { Measurement } from '../model/measurements.model';
+import { TreeAsset } from '../model/treeAsset.model';
 
 
 
@@ -11,7 +11,7 @@ export const loadAssets = createAction(
 
 export const assetsLoaded = createAction(
   '[Assets Effect] assets Loaded Successfully',
-  props<{ asset: Asset[] }>()
+  props<{ asset: TreeAsset[] }>()
 );
 
 
@@ -27,9 +27,14 @@ export const measurementsLoaded = createAction(
 
 export const currentAsset = createAction(
   '[Assets] Get currently selected asset',
-  props<{ assetId: number }>()
 );
 
+/**
+ *
+ *
+ * @export
+ * @enum {number}
+ */
 export enum CounterActionTypes {
   Increment = '[Counter] Increment',
   Decrement = '[Counter] Decrement',
