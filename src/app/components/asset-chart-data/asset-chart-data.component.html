@@ -41,30 +41,11 @@
   </div>
 
 
-  <div class="counter">
+  <div class="counter my-5" style="text-align: center;">
     <div class="total">{{total | async}}</div>
     <button (click)="increment()">+</button>
     <button (click)="decrement()">-</button>
     <button (click)="reset()">C</button>
   </div>
-
-  <!-- <div>
-    <table class="table table-bordered table-striped">
-      <thead>
-        <tr>
-          <th>id</th>
-          <th>name</th>
-          <th>parent id</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let asset of  assetNodes  ; let i=index">
-          <td>{{asset.id}}</td>
-          <td>{{asset.name}}</td>
-          <td>{{asset.parentId}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div> -->
 
 </div>
