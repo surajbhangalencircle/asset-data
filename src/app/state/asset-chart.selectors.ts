@@ -27,6 +27,11 @@ export const areMeasurementsLoaded = createSelector(
   state => state.measurementsLoaded
 );
 
+export const getSelectedAsset = createSelector(
+  assetDataFeatureSelector,
+  state => state
+);
+
 export const areAssetDataLoaded = createSelector(
     assetDataFeatureSelector,
     state => state
